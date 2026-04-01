@@ -1,0 +1,10 @@
+{
+  "MAXWELLSSLAYINGDEMON-STRIKE.title": "打击",
+  "MAXWELLSSLAYINGDEMON-STRIKE.description": "造成 {Damage:diff()} 点伤害。",
+  
+  "MAXWELLSSLAYINGDEMON-DEFEND.title": "防御",
+  "MAXWELLSSLAYINGDEMON-DEFEND.description": "获得 {Block:diff()} 点 [gold]格挡[/gold]。",
+  
+  "MAXWELLSSLAYINGDEMON-MAXWELL_STRIKE.title": "麦克斯韦打击",
+  "MAXWELLSSLAYINGDEMON-MAXWELL_STRIKE.description": "造成 {Damage:diff()} 点伤害。\nTODO: 添加特殊效果描述。"
+}
