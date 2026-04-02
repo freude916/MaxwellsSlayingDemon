@@ -121,6 +121,7 @@
 
     <ItemGroup>
       <Folder Include="docs\" />
+      <Folder Include="src\Keywords\Patches\" />
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">

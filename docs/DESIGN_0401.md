@@ -332,11 +332,11 @@ public sealed class VulnerablePower : PowerModel
 
 ### 推荐方案
 
-| 场景 | 推荐方案 |
-|------|---------|
-| 永久卡牌增强 | Enchantment（战斗外） |
-| 战斗内全局效果 | Power |
-| 战斗内单卡效果（不叠加） | Affliction |
+| 场景               | 推荐方案                                      |
+|------------------|-------------------------------------------|
+| 永久卡牌增强           | Enchantment（战斗外）                          |
+| 战斗内全局效果          | Power                                     |
+| 战斗内单卡效果（不叠加）     | Affliction                                |
 | **战斗内单卡效果（可叠加）** | **BaseLib: Keyword + DynamicVar + Patch** |
 
 ### BaseLib 方案优势
