@@ -1,0 +1,5 @@
+{
+  "MAXWELLMOD-ENVIRON_TEMP_POWER.title": "温度",
+  "MAXWELLMOD-ENVIRON_TEMP_POWER.description": "温度 > 3 时，受到的伤害 +1。\n温度 < -3 时，冷牌费用 +1。",
+  "MAXWELLMOD-ENVIRON_TEMP_POWER.smartDescription": "当前温度：[blue]{Amount}[/blue]。\n温度 > 3 时，受到的伤害 +1。\n温度 < -3 时，冷牌费用 +1。"
+}

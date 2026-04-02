@@ -1,3 +1,4 @@
+using MaxwellMod.Keywords;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
@@ -7,39 +8,42 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace MaxwellMod.Cards;
 
 /// <summary>
-/// 初始打击牌
+/// Maxwell 的初始攻击牌
 /// </summary>
-public class Strike : AbstractMaxwellCard
+public class HeatSource : AbstractMaxwellCard
 {
-    public Strike() : base(1, CardType.Attack, CardRarity.Basic, TargetType.AnyEnemy)
+    public HeatSource() : base(1, CardType.Attack, CardRarity.Basic, TargetType.None)
     {
     }
+    
+    public override IEnumerable<CardKeyword> CanonicalKeywords => [MaxwellKeywords.HeatKeyword];
     
     /// <summary>
     /// 卡牌标签 (Strike)
     /// </summary>
     public override HashSet<CardTag> CanonicalTags =>
     [
-        CardTag.Strike
+        
     ];
     
     /// <summary>
-    /// 动态变量 (6点伤害)
+    /// 动态变量 (能量变化)
     /// </summary>
-    public override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(6m, ValueProp.Move)];
+    public override IEnumerable<DynamicVar> CanonicalVars => 
+    [
+        new EnergyVar(0),  // 升级后能耗
+    ];
     
     /// <summary>
     /// 打出效果
+    /// TODO: 根据人物机制设计具体效果
     /// </summary>
     public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
-        ArgumentNullException.ThrowIfNull(cardPlay.Target);
-        await DamageCmd.Attack(DynamicVars.Damage.BaseValue)
-            .FromCard(this)
-            .Targeting(cardPlay.Target)
-            .WithHitFx("vfx/vfx_attack_slash")
-            .Execute(choiceContext);
+        
+        // 理论上热已经被 Keyword 解决了
+        await Task.CompletedTask;
     }
     
     /// <summary>
@@ -47,6 +51,6 @@ public class Strike : AbstractMaxwellCard
     /// </summary>
     public override void OnUpgrade()
     {
-        DynamicVars.Damage.UpgradeValueBy(3m);
+        DynamicVars.Energy.UpgradeValueBy(-1m);
     }
 }

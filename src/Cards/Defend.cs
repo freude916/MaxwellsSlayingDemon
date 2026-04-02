@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.ValueProps;
 
-namespace MaxwellsSlayingDemon.Cards;
+namespace MaxwellMod.Cards;
 
 /// <summary>
 /// 初始防御牌

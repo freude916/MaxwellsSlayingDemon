@@ -1,8 +1,8 @@
 using BaseLib.Abstracts;
 using BaseLib.Utils;
-using MaxwellsSlayingDemon.PatchesNModels;
+using MaxwellMod.PatchesNModels;
 
-namespace MaxwellsSlayingDemon.Relics;
+namespace MaxwellMod.Relics;
 
 /// <summary>
 /// Maxwell 人物遗物的基类
@@ -13,15 +13,15 @@ public abstract class AbstractMaxwellRelic : CustomRelicModel
     /// <summary>
     /// 小图标路径 (64x64)
     /// </summary>
-    public override string PackedIconPath => $"res://MaxwellsSlayingDemon/images/relics/{Id.Entry.ToLowerInvariant()}.png";
+    public override string PackedIconPath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
     
     /// <summary>
     /// 轮廓图标路径
     /// </summary>
-    public override string PackedIconOutlinePath => $"res://MaxwellsSlayingDemon/images/relics/{Id.Entry.ToLowerInvariant()}.png";
+    public override string PackedIconOutlinePath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
     
     /// <summary>
     /// 大图标路径 (256x256)
     /// </summary>
-    public override string BigIconPath => $"res://MaxwellsSlayingDemon/images/relics/{Id.Entry.ToLowerInvariant()}.png";
+    public override string BigIconPath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
 }

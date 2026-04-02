@@ -1,0 +1,17 @@
+{
+  "MAXWELLMOD-MAXWELL_CHARACTER.title": "麦克斯韦妖",
+  "MAXWELLMOD-MAXWELL_CHARACTER.description": "不可捉摸的物理学神兽……的亲戚，[br]擅长玩弄热与熵。",
+  "MAXWELLMOD-MAXWELL_CHARACTER.aromaPrinciple": "[sine][blue]...[/blue][/sine]",
+  "MAXWELLMOD-MAXWELL_CHARACTER.banter.alive.endTurnPing": "好热...",
+  "MAXWELLMOD-MAXWELL_CHARACTER.banter.dead.endTurnPing": ".好冷..",
+  "MAXWELLMOD-MAXWELL_CHARACTER.cardsModifierDescription": "麦克斯韦的卡牌将出现在奖励和商店中。",
+  "MAXWELLMOD-MAXWELL_CHARACTER.cardsModifierTitle": "麦克斯韦卡牌",
+  "MAXWELLMOD-MAXWELL_CHARACTER.eventDeathPrevention": "还不能死...",
+  "MAXWELLMOD-MAXWELL_CHARACTER.goldMonologue": "[sine]金币...[/sine]",
+  "MAXWELLMOD-MAXWELL_CHARACTER.possessiveAdjective": "他的",
+  "MAXWELLMOD-MAXWELL_CHARACTER.pronounObject": "他",
+  "MAXWELLMOD-MAXWELL_CHARACTER.pronounPossessive": "他的",
+  "MAXWELLMOD-MAXWELL_CHARACTER.pronounSubject": "他",
+  "MAXWELLMOD-MAXWELL_CHARACTER.titleObject": "猎魔人",
+  "MAXWELLMOD-MAXWELL_CHARACTER.unlockText": "使用 [pink]{Prerequisite}[/pink] 完成一次游戏以解锁此角色。"
+}

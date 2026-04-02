@@ -1,0 +1,19 @@
+{
+    "MAXWELLMOD-HEAT_KEYWORD.title": "热",
+    "MAXWELLMOD-HEAT_KEYWORD.description": "打出时使得环境温度+1，将左右两张温度升高，并施加“态：活泼”",
+
+    "MAXWELLMOD-COLD_KEYWORD.title": "冷",
+    "MAXWELLMOD-COLD_KEYWORD.description": "打出时使得环境温度-1，将左右两张温度降低，并施加“态：稳定”",
+
+    "MAXWELLMOD-GREEN_KEYWORD.title": "绿",
+    "MAXWELLMOD-GREEN_KEYWORD.description": "打出时将态带来的数值增益固化，并将左右两张牌染绿",
+
+    "MAXWELLMOD-HEATKEYWORD.title": "热",
+    "MAXWELLMOD-HEATKEYWORD.description": "打出时使得环境温度+1，将左右两张温度升高，并施加“态：活泼”",
+
+    "MAXWELLMOD-COLDKEYWORD.title": "冷",
+    "MAXWELLMOD-COLDKEYWORD.description": "打出时使得环境温度-1，将左右两张温度降低，并施加“态：稳定”",
+
+    "MAXWELLMOD-GREENKEYWORD.title": "绿",
+    "MAXWELLMOD-GREENKEYWORD.description": "打出时将态带来的数值增益固化，并将左右两张牌染绿"
+}

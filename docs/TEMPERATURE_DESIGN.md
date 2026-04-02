@@ -75,7 +75,7 @@
 ### 3.1 自定义 Keyword 定义
 
 ```csharp
-namespace MaxwellsSlayingDemon.Keywords;
+namespace MaxwellMod.Keywords;
 
 /// <summary>
 /// 热词缀 - 打出时升温，影响周围卡牌
@@ -102,7 +102,7 @@ public static readonly CardKeyword GreenKeyword;
 ### 3.2 卡牌温度变化监听接口
 
 ```csharp
-namespace MaxwellsSlayingDemon.Temperature;
+namespace MaxwellMod.Temperature;
 
 /// <summary>
 /// 卡牌温度变化监听接口
@@ -123,7 +123,7 @@ public interface ICardTemperatureListener
 ### 3.3 TemperatureManager (静态工具类)
 
 ```csharp
-namespace MaxwellsSlayingDemon.Temperature;
+namespace MaxwellMod.Temperature;
 
 /// <summary>
 /// 温度系统的核心管理器
@@ -329,7 +329,7 @@ public class StateVar : DynamicVar
 ### 3.4 TemperaturePower (全局温度 Power)
 
 ```csharp
-namespace MaxwellsSlayingDemon.Powers;
+namespace MaxwellMod.Powers;
 
 /// <summary>
 /// 温度环境 Power
@@ -388,7 +388,7 @@ public sealed class TemperaturePower : AbstractMaxwellPower
 ### 4.1 热牌/冷牌打出效果
 
 ```csharp
-namespace MaxwellsSlayingDemon.Temperature.Patches;
+namespace MaxwellMod.Temperature.Patches;
 
 /// <summary>
 /// 热牌/冷牌打出时的效果
@@ -450,7 +450,7 @@ public static class TemperatureCardPlayPatch
 ### 4.2 态伤害/防御修改
 
 ```csharp
-namespace MaxwellsSlayingDemon.Temperature.Patches;
+namespace MaxwellMod.Temperature.Patches;
 
 /// <summary>
 /// 态对伤害的修改：活泼 +2 * 层数
@@ -495,7 +495,7 @@ public static class StateBlockPatch
 ### 4.3 绿关键词效果
 
 ```csharp
-namespace MaxwellsSlayingDemon.Temperature.Patches;
+namespace MaxwellMod.Temperature.Patches;
 
 [HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardPlayed))]
 public static class GreenKeywordPatch
@@ -549,7 +549,7 @@ public static class GreenKeywordPatch
 ### 5.1 活塞卡牌（实现 ICardTemperatureListener）
 
 ```csharp
-namespace MaxwellsSlayingDemon.Cards;
+namespace MaxwellMod.Cards;
 
 /// <summary>
 /// 活塞卡牌
@@ -591,75 +591,7 @@ public class Piston : AbstractMaxwellCard, ICardTemperatureListener
 }
 ```
 
-### 5.2 热牌/冷牌基类
 
-```csharp
-namespace MaxwellsSlayingDemon.Cards;
-
-/// <summary>
-/// 热牌基类 - 自动添加热词缀
-/// </summary>
-public abstract class HotCard : AbstractMaxwellCard
-{
-    protected HotCard(int energyCost, CardType type, CardRarity rarity, TargetType targetType)
-        : base(energyCost, type, rarity, targetType)
-    {
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Keywords.Add(Keywords.HeatKeyword);
-    }
-}
-
-/// <summary>
-/// 冷牌基类 - 自动添加冷词缀
-/// </summary>
-public abstract class ColdCard : AbstractMaxwellCard
-{
-    protected ColdCard(int energyCost, CardType type, CardRarity rarity, TargetType targetType)
-        : base(energyCost, type, rarity, targetType)
-    {
-    }
-
-    protected override void OnInitialized()
-    {
-        base.OnInitialized();
-        Keywords.Add(Keywords.ColdKeyword);
-    }
-}
-```
-
-### 5.3 具体卡牌示例
-
-```csharp
-/// <summary>
-/// 热焰斩 - 热牌，造成 6 点伤害
-/// </summary>
-public class HeatSlash : HotCard
-{
-    public HeatSlash() : base(1, CardType.Attack, CardRarity.Common, TargetType.Enemy) { }
-
-    public override async Task Play(CombatState combatState, CardPlay cardPlay)
-    {
-        await DamageCmd.DealDamage(cardPlay.Target!, 6, cardPlay);
-    }
-}
-
-/// <summary>
-/// 冰霜守卫 - 冷牌，获得 5 点格挡
-/// </summary>
-public class FrostGuard : ColdCard
-{
-    public FrostGuard() : base(1, CardType.Skill, CardRarity.Common, TargetType.Self) { }
-
-    public override async Task Play(CombatState combatState, CardPlay cardPlay)
-    {
-        await BlockCmd.GainBlock(cardPlay.Player.Creature, 5);
-    }
-}
-```
 
 ---
 

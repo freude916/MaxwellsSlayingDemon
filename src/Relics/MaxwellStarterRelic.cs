@@ -4,7 +4,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models;
 
-namespace MaxwellsSlayingDemon.Relics;
+namespace MaxwellMod.Relics;
 
 /// <summary>
 /// Maxwell 的初始遗物
@@ -30,10 +30,10 @@ public class MaxwellStarterRelic : AbstractMaxwellRelic
     /// TODO: 实现遗物效果
     /// 例如：在回合开始时获得某种效果
     /// </summary>
-    public override async Task AfterPlayerTurnStart(PlayerChoiceContext context, Player player)
+    public override async Task AfterPlayerTurnStart(PlayerChoiceContext choiceContext, Player player)
     {
         // TODO: 实现遗物效果
-        await base.AfterPlayerTurnStart(context, player);
+        await base.AfterPlayerTurnStart(choiceContext, player);
     }
     
     /// <summary>

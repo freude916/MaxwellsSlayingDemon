@@ -1,0 +1,16 @@
+{
+  "MAXWELLMOD-STRIKE.title": "打击",
+  "MAXWELLMOD-STRIKE.description": "造成 {Damage:diff()} 点伤害。",
+  
+  "MAXWELLMOD-DEFEND.title": "防御",
+  "MAXWELLMOD-DEFEND.description": "获得 {Block:diff()} 点 [gold]格挡[/gold]。",
+  
+  "MAXWELLMOD-HEAT_SOURCE.title": "热源",
+  "MAXWELLMOD-HEAT_SOURCE.description": "",
+
+  "MAXWELLMOD-COLD_SOURCE.title": "冷源",
+  "MAXWELLMOD-COLD_SOURCE.description": "",
+  
+  "MAXWELLMOD-PISTON.title": "活塞",
+  "MAXWELLMOD-PISTON.description": "[gold]无法被打出[/gold]。\n升温时，[gold]丢弃[/gold]一张牌。\n降温时，抽一张牌。"
+}

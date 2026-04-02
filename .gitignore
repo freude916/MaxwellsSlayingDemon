@@ -7,7 +7,6 @@ android/
 publish/
 properties/
 packages/
-.reference/
 models/
 .editorconfig
 *.import
