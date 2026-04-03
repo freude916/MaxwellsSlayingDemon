@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://cs3a5onikvhi4"]
 
-[ext_resource type="Texture2D" path="res://MaxwellMod/mod_image.png" id="1_85qf2"]
+[ext_resource type="Texture2D" path="res://MaxwellMod/images/energy_maxwell.png" uid="uid://6d7j100yrgxe" id="1_85qf2"]
 
 [node name="MaxwellEnergyCounter" type="Control"]
 layout_mode = 3
@@ -33,6 +33,10 @@ layout_mode = 1
 anchors_preset = 15
 anchor_right = 1.0
 anchor_bottom = 1.0
+offset_left = -24.0
+offset_top = -24.0
+offset_right = 24.0
+offset_bottom = 24.0
 grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_85qf2")

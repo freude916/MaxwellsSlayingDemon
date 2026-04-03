@@ -1,5 +1,5 @@
 {
-  "MAXWELLMOD-MAXWELL_STARTER_RELIC.title": "初始遗物",
-  "MAXWELLMOD-MAXWELL_STARTER_RELIC.description": "TODO: 添加遗物描述。",
-  "MAXWELLMOD-MAXWELL_STARTER_RELIC.flavor": "一件神秘的文物。"
+  "MAXWELLMOD-RECORDING_EYE.title": "初始遗物",
+  "MAXWELLMOD-RECORDING_EYE.description": "每场战斗开始时，将 1 张 [gold]暂存[/gold] 置入手牌。",
+  "MAXWELLMOD-RECORDING_EYE.flavor": "一件神秘的文物。"
 }

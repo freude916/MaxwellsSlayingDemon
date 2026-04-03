@@ -26,14 +26,14 @@
 
 现有 Affliction 实现：
 
-| 名称 | 可叠加 | 有额外文本 | 功能说明 |
-|------|--------|-----------|----------|
-| **Hexed** | 否 | 否 | 配合 HexPower 使用，自动添加 Ethereal 关键词 |
-| **Galvanized** | 是 | 是 | 仅标记，无特殊逻辑 |
-| **Bound** | 否 | 是 | 仅标记，无特殊逻辑 |
-| **Entangled** | 否 | 否 | 仅标记，无特殊逻辑 |
-| **Ringing** | 否 | 是 | 仅标记，无特殊逻辑 |
-| **Smog** | 否 | 否 | 仅标记，无特殊逻辑 |
+| 名称             | 可叠加 | 有额外文本 | 功能说明                             |
+|----------------|-----|-------|----------------------------------|
+| **Hexed**      | 否   | 否     | 配合 HexPower 使用，自动添加 Ethereal 关键词 |
+| **Galvanized** | 是   | 是     | 仅标记，无特殊逻辑                        |
+| **Bound**      | 否   | 是     | 仅标记，无特殊逻辑                        |
+| **Entangled**  | 否   | 否     | 仅标记，无特殊逻辑                        |
+| **Ringing**    | 否   | 是     | 仅标记，无特殊逻辑                        |
+| **Smog**       | 否   | 否     | 仅标记，无特殊逻辑                        |
 
 ### Hexed 示例（完整实现）
 
@@ -322,13 +322,13 @@ public sealed class VulnerablePower : PowerModel
 
 ## 七、总结：修改卡牌伤害的可选方案
 
-| 方案 | 战斗中可用 | 可叠加 | 实现复杂度 | 持久性 |
-|------|-----------|--------|-----------|--------|
-| **Enchantment** | ❌ | ✅ | 低 | 永久 |
-| **Affliction** | ✅ | ❌（每卡1个） | 中 | 战斗内 |
-| **Power** | ✅ | ✅ | 中 | 战斗内 |
-| **BaseLib: Keyword+Var+Patch** | ✅ | ✅ | 高 | 灵活 |
-| **CardKeyword（原生）** | - | - | - | 不支持数值 |
+| 方案                             | 战斗中可用 | 可叠加     | 实现复杂度 | 持久性   |
+|--------------------------------|-------|---------|-------|-------|
+| **Enchantment**                | ❌     | ✅       | 低     | 永久    |
+| **Affliction**                 | ✅     | ❌（每卡1个） | 中     | 战斗内   |
+| **Power**                      | ✅     | ✅       | 中     | 战斗内   |
+| **BaseLib: Keyword+Var+Patch** | ✅     | ✅       | 高     | 灵活    |
+| **CardKeyword（原生）**            | -     | -       | -     | 不支持数值 |
 
 ### 推荐方案
 
@@ -413,16 +413,19 @@ public IEnumerable<AbstractModel> IterateHookListeners()
 ### 如果不想用 Patch 的替代方案
 
 **方案 A：使用 Power**
+
 - 创建一个隐藏的 Power 绑定到玩家
 - Power 实现 `ModifyDamageAdditive`
 - 通过 Power 的 `Amount` 或自定义字段存储数据
 
 **方案 B：使用 ModifierModel**
+
 - 继承 `ModifierModel`
 - 实现 `ModifyDamage*` 方法
 - 但 ModifierModel 是战斗级别的，无法动态添加
 
 **方案 C：Patch `IterateHookListeners`**
+
 - Patch `IterateHookListeners` 方法
 - 在返回前添加自定义 Listener
 - 这样自定义 Listener 就能参与所有 Hook

@@ -1,34 +1,36 @@
 using BaseLib.Patches.Content;
 using MegaCrit.Sts2.Core.Entities.Cards;
 
-
 namespace MaxwellMod.Keywords;
 
 /// <summary>
-/// Maxwell Mod 自定义关键词
+///     Maxwell Mod 自定义关键词
 /// </summary>
 #pragma warning disable CA2211
 // ReSharper disable UnassignedField.Global
 public static class MaxwellKeywords
 {
     /// <summary>
-    /// 热词缀 - 打出时升温，影响周围卡牌
+    ///     热词缀 - 打出时升温，影响周围卡牌
     /// </summary>
-    [CustomEnum(nameof(HeatKeyword))]
-    [KeywordProperties(AutoKeywordPosition.After)]
+    [CustomEnum(nameof(HeatKeyword))] [KeywordProperties(AutoKeywordPosition.After)]
     public static CardKeyword HeatKeyword;
 
     /// <summary>
-    /// 冷词缀 - 打出时降温，影响周围卡牌
+    ///     冷词缀 - 打出时降温，影响周围卡牌
     /// </summary>
-    [CustomEnum(nameof(ColdKeyword))]
-    [KeywordProperties(AutoKeywordPosition.After)]
+    [CustomEnum(nameof(ColdKeyword))] [KeywordProperties(AutoKeywordPosition.After)]
     public static CardKeyword ColdKeyword;
 
     /// <summary>
-    /// 绿词缀 - 虚无、消耗，态转化
+    ///     绿词缀 - 虚无、消耗，态转化
     /// </summary>
-    [CustomEnum(nameof(GreenKeyword))]
-    [KeywordProperties(AutoKeywordPosition.After)]
+    [CustomEnum(nameof(GreenKeyword))] [KeywordProperties(AutoKeywordPosition.After)]
     public static CardKeyword GreenKeyword;
+
+    /// <summary>
+    ///     绝缘词缀 - 不会被相邻传热影响
+    /// </summary>
+    [CustomEnum(nameof(InsulationKeyword))] [KeywordProperties(AutoKeywordPosition.After)]
+    public static CardKeyword InsulationKeyword;
 }

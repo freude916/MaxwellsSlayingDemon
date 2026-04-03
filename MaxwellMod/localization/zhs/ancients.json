@@ -8,7 +8,6 @@
   "DARV.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "我想要的那一件……它不需要存在！只要分类的过程永不结束就够了！\n[i][font_size=22]麦克斯韦妖只是站着，像一个永不停歇的分类器，在混沌中创造着小小的秩序。[/font_size][/i]",
   "DARV.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "DARV.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "……罢了。把选择留到下次测量吧。看来你习惯把“下次”的概率放得很久。",
-
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "你又把我从热平衡里叫醒！太好了！这次要我去搞乱哪个封闭系统？",
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "[sine]...去... 塔里... ..继续... 观测.....[/sine]",
@@ -18,7 +17,6 @@
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "若你赐我什么……请赐我一个“更快一点”的活板门！别的，我都不缺！",
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "NEOW.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "[sine]...去吧... \n..我会... 在你...回头的地方... ..维持平衡.....[/sine]",
-
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "华丽的房间！完美的序！可我……只是个忙着给粒子分类的小门卫！",
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "哎呀，就算是小门卫，接受了我的赋能也能变得更加精确呢。",
@@ -28,7 +26,6 @@
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "……我不需要打扮！我只需要效率！",
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "NONUPEIPE.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "真是不解风情。拿去吧。让我看着你继续分类——披着我的序，也披着你的信息。",
-
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "你在随机！我在分类！我们俩都在对抗熵增，不是吗！",
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "都是！！都是！！试试这个扰动系统！！",
@@ -38,7 +35,6 @@
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "……我刚从这边分出来一点‘冷’。你要不要摸摸看？",
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "OROBAS.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "好！好！那我们说定了：我继续混沌，你继续有序！！",
-
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "你的吐息像可逆过程……真好！这样我可以一直观测，不用担心能量耗散！",
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "[thinky_dots]精确的旅人……拿走我的一部分能量，在平衡态里寻找基态吧……[/thinky_dots]",
@@ -48,7 +44,6 @@
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "……我不怕做功！只怕系统达到热平衡，我就没得玩了！",
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "PAEL.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "[thinky_dots]收下吧……让你继续维持在这里……观测那条还没出现的路径……[/thinky_dots]",
-
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "你要做功！我要观测！正好，我们互不干扰！",
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "[b]不行！！拿着这件仪器！去加速熵增！！！[/b]",
@@ -58,7 +53,6 @@
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "若一定要测量……来吧！看看是你的系统先崩溃，还是我的分类先完成！\n[i][font_size=22]麦克斯韦妖上前一步，像在反应中加入了完美的催化剂。[/font_size][/i]",
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "TANX.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "[b]狂妄！！但你有无限的信息！！收下这件仪器去观测吧！[/b]",
-
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "火很暖！能量梯度很大！我最喜欢这种地方了！",
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "喜欢就没关系呀。快进来吧，让我在观测中把你[jitter][b]加热[/b][/jitter]一下。",
@@ -68,7 +62,6 @@
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "……我的内部能量是恒定的！我只是信息熵有点低！",
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "TEZCATARA.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "好吧，那就吸收一点吧。然后我们继续观测——等系统的[jitter][b]涨落[/b][/jitter]平息。",
-
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.char": "恶魔也做交易！太好了！你要我的什么？我的信息？它可是无价之宝！",
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0.next": "继续",
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1.ancient": "没有实体的[sine]信息[/sine]积攒起来，也是很可观的负熵呢……",
@@ -78,7 +71,6 @@
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.char": "……我的状态由我决定！在我打开门之前，谁也别想测量！",
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1.next": "继续",
   "VAKUU.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-2.ancient": "拿去你的信息熵。我绝不会扰动你——除非[sine]那一刻[/sine]真的坍缩。",
-
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0r.ancient": "你存在于此，却像哪里都不在。你在观测什么？相变？奇点？还是一个初始条件？",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0r.char": "11",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0r.next": "回答",
@@ -87,14 +79,11 @@
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1r.next": "继续",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-2r.ancient": "初始条件？你从来不需要。你只是害怕“测量了却测错”。",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-attack": "11",
-
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.1-0r.ancient": "你又回来。时间对你而言像一个封闭系统——你走不出去，是因为你不想停下观测。",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.1-0r.next": "继续",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.1-1r.char": "本征态太无聊了！叠加态才好玩！",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.1-1r.next": "继续",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.1-2r.ancient": "悖论。你若不选择一个本征态，就永远只是概率。",
-
-
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-0r.ancient": "那就观测吧。系统会替你记住：你来过，很多次，却什么也没改变。",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-0r.next": "继续",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.2-1r.char": "改变什么……会让这个系统达到热平衡吗？",

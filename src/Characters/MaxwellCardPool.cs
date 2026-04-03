@@ -4,7 +4,7 @@ using Godot;
 namespace MaxwellMod.PatchesNModels;
 
 /// <summary>
-/// Maxwell 人物的卡池定义
+///     Maxwell 人物的卡池定义
 /// </summary>
 public class MaxwellCardPool : CustomCardPoolModel
 {
@@ -28,7 +28,7 @@ public class MaxwellCardPool : CustomCardPoolModel
     /// <summary>
     /// 大能量图标路径
     /// </summary>
-    public override string? BigEnergyIconPath => "res://MaxwellMod/images/ui/cardOrb.png";
+    public override string? BigEnergyIconPath => "res://MaxwellMod/images/energy_maxwell.png";
     
     /// <summary>
     /// 文本能量图标路径

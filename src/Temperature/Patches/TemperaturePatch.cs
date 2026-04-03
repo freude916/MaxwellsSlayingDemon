@@ -1,9 +1,11 @@
 using BaseLib.Extensions;
 using HarmonyLib;
+using MaxwellMod.Cards;
 using MaxwellMod.Keywords;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Entities.Creatures;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Models;
@@ -12,8 +14,8 @@ using MegaCrit.Sts2.Core.ValueProps;
 namespace MaxwellMod.Temperature.Patches;
 
 /// <summary>
-/// 在卡牌从手牌移出前记录索引
-/// CardPileCmd.AddDuringManualCardPlay 会在 BeforeCardPlayed 之前被调用，此时卡牌还在手牌中
+///     在卡牌从手牌移出前记录索引
+///     CardPileCmd.AddDuringManualCardPlay 会在 BeforeCardPlayed 之前被调用，此时卡牌还在手牌中
 /// </summary>
 [HarmonyPatch(typeof(CardPileCmd), nameof(CardPileCmd.AddDuringManualCardPlay))]
 public static class RecordHandIndexPatch
@@ -35,7 +37,7 @@ public static class RecordHandIndexPatch
 }
 
 /// <summary>
-/// 热牌/冷牌打出后的效果（使用之前记录的手牌索引）
+///     热牌/冷牌/绿牌打出后的效果（使用之前记录的手牌索引）
 /// </summary>
 [HarmonyPatch(typeof(Hook), nameof(Hook.AfterCardPlayed))]
 public static class TemperatureCardPlayPatch
@@ -56,14 +58,13 @@ public static class TemperatureCardPlayPatch
             var keywords = card.Keywords;
             Entry.Logger.Info($"[TemperaturePatch] Card keywords count: {keywords.Count}");
             foreach (var kw in keywords)
-            {
                 Entry.Logger.Info($"[TemperaturePatch]   - Keyword: {kw.GetTitle().GetFormattedText()}");
-            }
 
             // 热牌
             var hasHeat = keywords.Contains(MaxwellKeywords.HeatKeyword);
             var hasCold = keywords.Contains(MaxwellKeywords.ColdKeyword);
-            Entry.Logger.Info($"[TemperaturePatch] HasHeat: {hasHeat}, HasCold: {hasCold}");
+            var hasGreen = keywords.Contains(MaxwellKeywords.GreenKeyword);
+            Entry.Logger.Info($"[TemperaturePatch] HasHeat: {hasHeat}, HasCold: {hasCold}, HasGreen: {hasGreen}");
 
             if (hasHeat)
             {
@@ -86,9 +87,15 @@ public static class TemperatureCardPlayPatch
                 // 2. 影响周围卡牌（使用记录的索引）
                 AffectAdjacentCards(card, -1, StateType.Stable, choiceContext);
             }
+            // 绿牌
+            else if (hasGreen)
+            {
+                Entry.Logger.Info("[TemperaturePatch] Green card detected! Converting state to permanent bonus...");
+                ConvertStateToPermanent(card);
+            }
             else
             {
-                Entry.Logger.Info("[TemperaturePatch] No heat/cold keyword found, skipping");
+                Entry.Logger.Info("[TemperaturePatch] No heat/cold/green keyword found, skipping");
             }
 
             // 清理记录的索引
@@ -100,9 +107,11 @@ public static class TemperatureCardPlayPatch
         }
     }
 
-    private static void AffectAdjacentCards(CardModel source, int tempDelta, StateType state, PlayerChoiceContext choiceContext)
+    private static void AffectAdjacentCards(CardModel source, int tempDelta, StateType state,
+        PlayerChoiceContext choiceContext)
     {
-        Entry.Logger.Info($"[TemperaturePatch] AffectAdjacentCards called for {source.Id}, delta={tempDelta}, state={state}");
+        Entry.Logger.Info(
+            $"[TemperaturePatch] AffectAdjacentCards called for {source.Id}, delta={tempDelta}, state={state}");
 
         var owner = source.Owner;
 
@@ -152,10 +161,45 @@ public static class TemperatureCardPlayPatch
             Entry.Logger.Info("[TemperaturePatch] No card on the right");
         }
     }
+
+    private static void ConvertStateToPermanent(CardModel card)
+    {
+        var hasConvertibleTarget = card is AbstractMaxwellCard || card.DeckVersion is AbstractMaxwellCard;
+        if (!hasConvertibleTarget)
+        {
+            Entry.Logger.Warn($"[TemperaturePatch] Skip green conversion: no AbstractMaxwellCard target ({card.Id})");
+            return;
+        }
+
+        var (damageBonus, blockBonus) = TemperatureManager.ConsumeCardStateAsPermanentBonus(card);
+        if (damageBonus == 0 && blockBonus == 0)
+        {
+            Entry.Logger.Info("[TemperaturePatch] No state bonus to convert");
+            return;
+        }
+
+        ApplyPermanentBonusToCard(card, damageBonus, blockBonus);
+
+        if (card.DeckVersion != null && !ReferenceEquals(card.DeckVersion, card))
+            ApplyPermanentBonusToCard(card.DeckVersion, damageBonus, blockBonus);
+    }
+
+    private static void ApplyPermanentBonusToCard(CardModel card, int damageBonus, int blockBonus)
+    {
+        if (card is not AbstractMaxwellCard maxwellCard)
+        {
+            Entry.Logger.Warn($"[TemperaturePatch] Skip permanent bonus: card is not AbstractMaxwellCard ({card.Id})");
+            return;
+        }
+
+        maxwellCard.ApplyPermanentStateBonus(damageBonus, blockBonus);
+        Entry.Logger.Info(
+            $"[TemperaturePatch] Permanent bonus applied: {card.Id}, damage+={damageBonus}, block+={blockBonus}");
+    }
 }
 
 /// <summary>
-/// 态对伤害的修改：活泼 +2 * 层数
+///     态对伤害的修改：活泼 +2 * 层数
 /// </summary>
 [HarmonyPatch(typeof(Hook), nameof(Hook.ModifyDamage))]
 public static class StateDamagePatch
@@ -165,16 +209,19 @@ public static class StateDamagePatch
         if (cardSource == null) return;
         if (!props.IsPoweredAttack_()) return;
 
-        var state = TemperatureManager.GetCardState(cardSource);
-        if (state != StateType.Lively) return;
+        if (cardSource is AbstractMaxwellCard maxwellCard) __result += maxwellCard.MaxwellMod_PermDamage;
 
-        var stacks = TemperatureManager.GetCardStateStacks(cardSource);
-        __result += 2 * stacks;
+        var state = TemperatureManager.GetCardState(cardSource);
+        if (state == StateType.Lively)
+        {
+            var stacks = TemperatureManager.GetCardStateStacks(cardSource);
+            __result += 2 * stacks;
+        }
     }
 }
 
 /// <summary>
-/// 态对防御的修改：稳定 +2 * 层数
+///     态对防御的修改：稳定 +2 * 层数
 /// </summary>
 [HarmonyPatch(typeof(Hook), nameof(Hook.ModifyBlock))]
 public static class StateBlockPatch
@@ -183,10 +230,32 @@ public static class StateBlockPatch
     {
         if (cardSource == null) return;
 
-        var state = TemperatureManager.GetCardState(cardSource);
-        if (state != StateType.Stable) return;
+        if (cardSource is AbstractMaxwellCard maxwellCard) __result += maxwellCard.MaxwellMod_PermBlock;
 
-        var stacks = TemperatureManager.GetCardStateStacks(cardSource);
-        __result += 2 * stacks;
+        var state = TemperatureManager.GetCardState(cardSource);
+        if (state == StateType.Stable)
+        {
+            var stacks = TemperatureManager.GetCardStateStacks(cardSource);
+            __result += 2 * stacks;
+        }
+    }
+}
+
+/// <summary>
+///     将卡牌态以额外文本的形式追加到卡牌描述底部（类似 extraCardText）
+/// </summary>
+[HarmonyPatch(typeof(CardModel), nameof(CardModel.GetDescriptionForPile), typeof(PileType), typeof(Creature))]
+public static class CardStateExtraCardTextPatch
+{
+    public static void Postfix(CardModel __instance, ref string __result)
+    {
+        if (__instance.CombatState == null) return;
+
+        var extraText = TemperatureManager.GetCardStateExtraCardText(__instance);
+        if (string.IsNullOrEmpty(extraText)) return;
+
+        __result = string.IsNullOrWhiteSpace(__result)
+            ? $"[purple]{extraText}[/purple]"
+            : $"{__result}\n[purple]{extraText}[/purple]";
     }
 }

@@ -10,10 +10,10 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 namespace MaxwellMod.Cards;
 
 /// <summary>
-/// 活塞卡牌
-/// - 无法被打出
-/// - 升温时，丢弃一张牌
-/// - 降温时，抽取一张牌
+///     活塞卡牌
+///     - 无法被打出
+///     - 升温时，丢弃一张牌
+///     - 降温时，抽取一张牌
 /// </summary>
 [Pool(typeof(MaxwellCardPool))]
 public class Piston : CustomCardModel, ICardTemperatureListener

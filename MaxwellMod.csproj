@@ -76,11 +76,11 @@
 
     <ItemGroup>
         <!-- BaseLib 包引用 - 取消注释以使用 NuGet 包 -->
-        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="0.2.0" PrivateAssets="All" />
+        <PackageReference Include="Alchyr.Sts2.BaseLib" Version="*" PrivateAssets="All"/>
         <PackageReference Include="Alchyr.Sts2.ModAnalyzers" Version="*"/>
         <AdditionalFiles Include="MaxwellMod/localization/**/*.json"/>
     </ItemGroup>
-    
+
     <!-- 本地 BaseLib 项目引用 (如果 NuGet 包不可用) -->
     <!--
     <ItemGroup>
@@ -101,7 +101,7 @@
 
     <ItemGroup>
         <None Include=".gitignore"/>
-        <None Include="MaxwellMod.json" />
+        <None Include="MaxwellMod.json"/>
         <None Include="project.godot"/>
         <None Include="MaxwellMod/**"/>
         <None Include="**/*.md"/>
@@ -120,8 +120,7 @@
     </ItemGroup>
 
     <ItemGroup>
-      <Folder Include="docs\" />
-      <Folder Include="src\Keywords\Patches\" />
+        <Folder Include="docs\"/>
     </ItemGroup>
 
     <Target Name="CheckDependencyPaths">
@@ -131,7 +130,7 @@
                Condition="'$(GodotPath)' == '' or !Exists('$(GodotPath)')"/>
     </Target>
 
-    <Target Name="CopyToModsFolderOnBuild" AfterTargets="PostBuildEvent">
+    <Target Name="CopyToModsFolderOnBuild" AfterTargets="Publish">
         <Message Text="Copying .dll and manifest to mods folder." Importance="high"/>
         <Copy SourceFiles="$(TargetPath)" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>
         <Copy SourceFiles="MaxwellMod.json" DestinationFolder="$(ModsPath)$(MSBuildProjectName)/"/>

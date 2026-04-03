@@ -4,15 +4,15 @@
 
 ## 一、机制概述
 
-| 名称   | ID       | 类型              | 核心功能                  |
-|------|----------|-----------------|-----------------------|
-| 温度环境 | TEMP_ENV | Power           | 全局温度管理，温度阈值效果         |
+| 名称   | ID       | 类型                | 核心功能                 |
+|------|----------|-------------------|----------------------|
+| 温度环境 | TEMP_ENV | Power             | 全局温度管理，温度阈值效果        |
 | 热    | HEAT     | **CustomKeyword** | 打出时升温，影响周围卡牌温度+1并施活泼 |
 | 冷    | COLD     | **CustomKeyword** | 打出时降温，影响周围卡牌温度-1并施稳定 |
-| 活泼   | LIVELY   | State (Var)     | 伤害+2                  |
-| 稳定   | STABLE   | State (Var)     | 防御+2                  |
-| 绿    | GREEN    | CustomKeyword   | 虚无+消耗，态转化，传递          |
-| 活塞   | PISTON   | Card            | 自己温度变化时触发效果           |
+| 活泼   | LIVELY   | State (Var)       | 伤害+2                 |
+| 稳定   | STABLE   | State (Var)       | 防御+2                 |
+| 绿    | GREEN    | CustomKeyword     | 虚无+消耗，态转化，传递         |
+| 活塞   | PISTON   | Card              | 自己温度变化时触发效果          |
 
 ---
 
@@ -591,8 +591,6 @@ public class Piston : AbstractMaxwellCard, ICardTemperatureListener
 }
 ```
 
-
-
 ---
 
 ## 六、Localization 配置
@@ -626,13 +624,13 @@ public class Piston : AbstractMaxwellCard, ICardTemperatureListener
 
 ## 七、关键设计总结
 
-| 需求 | 解决方案 |
-|-----|---------|
-| 热/冷是词缀 | `CustomEnum` + `CardKeyword` |
-| 卡牌温度变化回调 | `ICardTemperatureListener` 接口 |
-| 统一操作入口 | `TemperatureManager` 静态类 |
-| 触发回调时机 | `ModifyCardTemperature()` 内部检查接口 |
-| 全局温度效果 | `TemperaturePower` 实现 Hook 方法 |
+| 需求       | 解决方案                             |
+|----------|----------------------------------|
+| 热/冷是词缀   | `CustomEnum` + `CardKeyword`     |
+| 卡牌温度变化回调 | `ICardTemperatureListener` 接口    |
+| 统一操作入口   | `TemperatureManager` 静态类         |
+| 触发回调时机   | `ModifyCardTemperature()` 内部检查接口 |
+| 全局温度效果   | `TemperaturePower` 实现 Hook 方法    |
 
 ---
 

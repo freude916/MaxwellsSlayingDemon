@@ -9,12 +9,13 @@ using MegaCrit.Sts2.Core.Models;
 namespace MaxwellMod.Characters;
 
 /// <summary>
-/// Maxwell 人物定义
+///     Maxwell 人物定义
 /// </summary>
 public class MaxwellCharacter : PlaceholderCharacterModel
 {
     // 角色名称颜色
     public override Color NameColor => new(0.1f, 0.14f, 0.49f);
+
     // 能量图标轮廓颜色
     public override Color EnergyLabelOutlineColor => new(0.1f, 0.1f, 0.5f);
 
@@ -26,14 +27,17 @@ public class MaxwellCharacter : PlaceholderCharacterModel
 
     // 人物模型tscn路径
     public override string CustomVisualPath => "res://MaxwellMod/scenes/maxwell_character.tscn";
+
     // 卡牌拖尾场景 (使用默认)
     // public override string CustomTrailPath => "res://scenes/vfx/card_trail_ironclad.tscn";
     // 人物头像路径
     public override string CustomIconTexturePath => "res://MaxwellMod/images/ui/maxwell_icon.png";
+
     // 人物头像2号 (使用默认)
     // public override string CustomIconPath => "res://scenes/ui/character_icons/ironclad_icon.tscn";
     // 能量表盘tscn路径
     public override string CustomEnergyCounterPath => "res://MaxwellMod/scenes/maxwell_energy_counter.tscn";
+
     // 篝火休息场景 (使用默认)
     // public override string CustomRestSiteAnimPath => "res://scenes/rest_site/characters/ironclad_rest_site.tscn";
     // 商店人物场景
@@ -49,10 +53,14 @@ public class MaxwellCharacter : PlaceholderCharacterModel
 
     // 人物选择背景
     public override string CustomCharacterSelectBg => "res://MaxwellMod/scenes/maxwell_select_bg.tscn";
+
     // 人物选择图标
     public override string CustomCharacterSelectIconPath => "res://MaxwellMod/images/char_select_maxwell.png";
+
     // 人物选择图标-锁定状态
-    public override string CustomCharacterSelectLockedIconPath => "res://MaxwellMod/images/char_select_maxwell_locked.png";
+    public override string CustomCharacterSelectLockedIconPath =>
+        "res://MaxwellMod/images/char_select_maxwell_locked.png";
+
     // 人物选择过渡动画 (使用默认)
     // public override string CustomCharacterSelectTransitionPath => "res://materials/transitions/ironclad_transition_mat.tres";
     // 地图上的角色标记图标、表情轮盘上的角色头像 (使用默认)
@@ -84,22 +92,25 @@ public class MaxwellCharacter : PlaceholderCharacterModel
         ModelDb.Card<Defend>(),
         ModelDb.Card<Defend>(),
         ModelDb.Card<HeatSource>(),
-        ModelDb.Card<ColdSource>(),
+        ModelDb.Card<ColdSource>()
     ];
 
     // 初始遗物
     public override IReadOnlyList<RelicModel> StartingRelics =>
     [
-        ModelDb.Relic<MaxwellStarterRelic>(),
+        ModelDb.Relic<RecordingEye>()
     ];
 
     // 攻击建筑师的攻击特效列表
-    public override List<string> GetArchitectAttackVfx() =>
-    [
-        "vfx/vfx_attack_blunt",
-        "vfx/vfx_heavy_blunt",
-        "vfx/vfx_attack_slash",
-        "vfx/vfx_bloody_impact",
-        "vfx/vfx_rock_shatter"
-    ];
+    public override List<string> GetArchitectAttackVfx()
+    {
+        return
+        [
+            "vfx/vfx_attack_blunt",
+            "vfx/vfx_heavy_blunt",
+            "vfx/vfx_attack_slash",
+            "vfx/vfx_bloody_impact",
+            "vfx/vfx_rock_shatter"
+        ];
+    }
 }

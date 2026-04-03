@@ -3,7 +3,7 @@ using BaseLib.Abstracts;
 namespace MaxwellMod.PatchesNModels;
 
 /// <summary>
-/// Maxwell 人物的遗物池定义
+///     Maxwell 人物的遗物池定义
 /// </summary>
 public class MaxwellRelicPool : CustomRelicPoolModel
 {

@@ -17,7 +17,7 @@
 
 # 开发假设
 
-目前这个 mod 不包含任何持久化，所以不用考虑任何数据存储和版本兼容问题，Keep It Simple & Stupid.
+所有 mod 不包含任何持久化，所以不用考虑任何数据存储和版本兼容问题，比如上限更改就直接改不要做钳制，Keep It Simple & Stupid.
 
 不要跨层修改！ Ui 做 Ui 的活，服务做服务的活，命令做命令的活。如果抽象坏掉了，停下工作并请求 User 介入。
 
@@ -26,5 +26,5 @@
 ## 资源文件命名
 
 图片资源文件名需要从驼峰变成使用**下划线分隔**（snake_case），并且需要命名空间。例如：
+
 - `HeatSource` → `heat_source.png`
-- `MaxwellStarterRelic` → `maxwell_starter_relic.png`
