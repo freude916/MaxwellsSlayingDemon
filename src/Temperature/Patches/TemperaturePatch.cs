@@ -22,6 +22,8 @@ public static class RecordHandIndexPatch
 {
     public static void Prefix(CardModel card)
     {
+        ArgumentNullException.ThrowIfNull(card);
+        
         var owner = card.Owner;
         if (owner.PlayerCombatState == null) return;
 
@@ -29,7 +31,7 @@ public static class RecordHandIndexPatch
         var cards = hand.Cards.ToList();
         var index = cards.IndexOf(card);
 
-        Entry.Logger.Info($"[TemperaturePatch] AddDuringManualCardPlay Prefix: {card.Id}, hand index: {index}");
+        Entry.Logger.Debug($"[TemperaturePatch] AddDuringManualCardPlay Prefix: {card.Id}, hand index: {index}");
 
         // 记录手牌索引
         TemperatureManager.HandIndexField.Set(card, index);
@@ -47,71 +49,53 @@ public static class TemperatureCardPlayPatch
 #pragma warning restore IDE0060
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
-        try
-        {
-            var card = cardPlay.Card;
-            var owner = card.Owner;
+        var card = cardPlay.Card;
+        var owner = card.Owner;
 
-            Entry.Logger.Info($"[TemperaturePatch] AfterCardPlayed triggered for card: {card.Id}");
+        // 热牌
+        var hasHeat = card.Keywords.Contains(MaxwellKeywords.HeatKeyword);
+        var hasCold = card.Keywords.Contains(MaxwellKeywords.ColdKeyword);
+        var hasGreen = card.Keywords.Contains(MaxwellKeywords.GreenKeyword);
+        var hasInsulation = card.Keywords.Contains(MaxwellKeywords.InsulationKeyword);
+        Entry.Logger.Debug($"[TemperaturePatch] HasHeat: {hasHeat}, HasCold: {hasCold}, HasGreen: {hasGreen}, HasInsulation: {hasInsulation}");
+        
+        // 传热
+        if (hasHeat && !hasInsulation)
+        {   
+            Entry.Logger.Info("[TemperaturePatch] Heat card detected! Applying effects...");
+            
+            // 1. 升温
+            await TemperatureManager.ModifyGlobalTemperature(owner, +1);
 
-            // 检查卡牌的所有关键词
-            var keywords = card.Keywords;
-            Entry.Logger.Info($"[TemperaturePatch] Card keywords count: {keywords.Count}");
-            foreach (var kw in keywords)
-                Entry.Logger.Info($"[TemperaturePatch]   - Keyword: {kw.GetTitle().GetFormattedText()}");
-
-            // 热牌
-            var hasHeat = keywords.Contains(MaxwellKeywords.HeatKeyword);
-            var hasCold = keywords.Contains(MaxwellKeywords.ColdKeyword);
-            var hasGreen = keywords.Contains(MaxwellKeywords.GreenKeyword);
-            Entry.Logger.Info($"[TemperaturePatch] HasHeat: {hasHeat}, HasCold: {hasCold}, HasGreen: {hasGreen}");
-
-            if (hasHeat)
-            {
-                Entry.Logger.Info("[TemperaturePatch] Heat card detected! Applying effects...");
-                // 1. 升温
-                await TemperatureManager.ModifyGlobalTemperature(owner, +1);
-                Entry.Logger.Info("[TemperaturePatch] Global temperature +1 applied");
-
-                // 2. 影响周围卡牌（使用记录的索引）
-                AffectAdjacentCards(card, +1, StateType.Lively, choiceContext);
-            }
-            // 冷牌
-            else if (hasCold)
-            {
-                Entry.Logger.Info("[TemperaturePatch] Cold card detected! Applying effects...");
-                // 1. 降温
-                await TemperatureManager.ModifyGlobalTemperature(owner, -1);
-                Entry.Logger.Info("[TemperaturePatch] Global temperature -1 applied");
-
-                // 2. 影响周围卡牌（使用记录的索引）
-                AffectAdjacentCards(card, -1, StateType.Stable, choiceContext);
-            }
-            // 绿牌
-            else if (hasGreen)
-            {
-                Entry.Logger.Info("[TemperaturePatch] Green card detected! Converting state to permanent bonus...");
-                ConvertStateToPermanent(card);
-            }
-            else
-            {
-                Entry.Logger.Info("[TemperaturePatch] No heat/cold/green keyword found, skipping");
-            }
-
-            // 清理记录的索引
-            TemperatureManager.HandIndexField.Set(card, -1);
+            // 2. 影响周围卡牌（使用记录的索引）
+            ConductToAdjacentCards(card, +1, StateType.Lively, choiceContext);
+            
         }
-        catch (Exception e)
+        // 传冷
+        else if (hasCold&& !hasInsulation)
         {
-            Entry.Logger.Error($"[TemperaturePatch] Error: {e}");
+            Entry.Logger.Info("[TemperaturePatch] Cold card detected! Applying effects...");
+            
+            // 1. 降温
+            await TemperatureManager.ModifyGlobalTemperature(owner, -1);
+
+            // 2. 影响周围卡牌（使用记录的索引）
+            ConductToAdjacentCards(card, -1, StateType.Stable, choiceContext);
         }
+        // 绿牌
+        else if (hasGreen)
+        {
+            ConvertStateToPermanent(card);
+        }
+
+        // 清理记录的索引
+        TemperatureManager.HandIndexField.Set(card, -1);
     }
 
-    private static void AffectAdjacentCards(CardModel source, int tempDelta, StateType state,
+    private static void ConductToAdjacentCards(CardModel source, int tempDelta, StateType state,
         PlayerChoiceContext choiceContext)
     {
-        Entry.Logger.Info(
-            $"[TemperaturePatch] AffectAdjacentCards called for {source.Id}, delta={tempDelta}, state={state}");
+        Entry.Logger.Debug($"[TemperaturePatch] ConductToAdjacentCards called for {source.Id}, delta={tempDelta}, state={state}");
 
         var owner = source.Owner;
 
@@ -123,7 +107,7 @@ public static class TemperatureCardPlayPatch
 
         // 使用之前记录的手牌索引
         var recordedIndex = TemperatureManager.HandIndexField.Get(source);
-        Entry.Logger.Info($"[TemperaturePatch] Recorded hand index: {recordedIndex}");
+        Entry.Logger.Debug($"[TemperaturePatch] Recorded hand index: {recordedIndex}");
 
         if (recordedIndex < 0)
         {
@@ -133,32 +117,48 @@ public static class TemperatureCardPlayPatch
 
         var hand = owner.PlayerCombatState.Hand;
         var cards = hand.Cards.ToList();
-        Entry.Logger.Info($"[TemperaturePatch] Current hand size: {cards.Count}");
+        Entry.Logger.Debug($"[TemperaturePatch] Current hand size: {cards.Count}");
 
         // 左边卡牌
         if (recordedIndex > 0 && recordedIndex - 1 < cards.Count)
         {
             var left = cards[recordedIndex - 1];
-            Entry.Logger.Info($"[TemperaturePatch] Affecting LEFT card: {left.Id}");
-            TemperatureManager.ModifyCardTemperature(left, tempDelta, choiceContext);
-            TemperatureManager.SetCardState(left, state);
+            Entry.Logger.Debug($"[TemperaturePatch] Affecting LEFT card: {left.Id}");
+            if (left.Keywords.Contains(MaxwellKeywords.IsothermalKeyword) ||
+                left.Keywords.Contains(MaxwellKeywords.InsulationKeyword))
+            {
+                Entry.Logger.Debug("[TemperaturePatch] LEFT card is thermal-isolated, skipping");
+            }
+            else
+            {
+                TemperatureManager.ModifyCardTemperature(left, tempDelta, choiceContext);
+                TemperatureManager.SetCardState(left, state);
+            }
         }
         else
         {
-            Entry.Logger.Info("[TemperaturePatch] No card on the left");
+            Entry.Logger.Debug("[TemperaturePatch] No card on the left");
         }
 
         // 右边卡牌
         if (recordedIndex < cards.Count)
         {
             var right = cards[recordedIndex];
-            Entry.Logger.Info($"[TemperaturePatch] Affecting RIGHT card: {right.Id}");
-            TemperatureManager.ModifyCardTemperature(right, tempDelta, choiceContext);
-            TemperatureManager.SetCardState(right, state);
+            Entry.Logger.Debug($"[TemperaturePatch] Affecting RIGHT card: {right.Id}");
+            if (right.Keywords.Contains(MaxwellKeywords.IsothermalKeyword) ||
+                right.Keywords.Contains(MaxwellKeywords.InsulationKeyword))
+            {
+                Entry.Logger.Debug("[TemperaturePatch] RIGHT card is thermal-isolated, skipping");
+            }
+            else
+            {
+                TemperatureManager.ModifyCardTemperature(right, tempDelta, choiceContext);
+                TemperatureManager.SetCardState(right, state);
+            }
         }
         else
         {
-            Entry.Logger.Info("[TemperaturePatch] No card on the right");
+            Entry.Logger.Debug("[TemperaturePatch] No card on the right");
         }
     }
 
@@ -174,7 +174,7 @@ public static class TemperatureCardPlayPatch
         var (damageBonus, blockBonus) = TemperatureManager.ConsumeCardStateAsPermanentBonus(card);
         if (damageBonus == 0 && blockBonus == 0)
         {
-            Entry.Logger.Info("[TemperaturePatch] No state bonus to convert");
+            Entry.Logger.Debug("[TemperaturePatch] No state bonus to convert");
             return;
         }
 
@@ -193,7 +193,7 @@ public static class TemperatureCardPlayPatch
         }
 
         maxwellCard.ApplyPermanentStateBonus(damageBonus, blockBonus);
-        Entry.Logger.Info(
+        Entry.Logger.Debug(
             $"[TemperaturePatch] Permanent bonus applied: {card.Id}, damage+={damageBonus}, block+={blockBonus}");
     }
 }

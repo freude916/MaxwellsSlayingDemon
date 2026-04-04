@@ -10,7 +10,7 @@ namespace MaxwellMod.Cards;
 /// </summary>
 public class ColdSource : AbstractMaxwellCard
 {
-    public ColdSource() : base(1, CardType.Attack, CardRarity.Basic, TargetType.None)
+    public ColdSource() : base(1, CardType.Skill, CardRarity.Basic, TargetType.None)
     {
     }
 
@@ -22,14 +22,7 @@ public class ColdSource : AbstractMaxwellCard
     public override HashSet<CardTag> CanonicalTags =>
     [
     ];
-
-    /// <summary>
-    ///     动态变量 (能量变化)
-    /// </summary>
-    public override IEnumerable<DynamicVar> CanonicalVars =>
-    [
-        new EnergyVar(0) // 升级后能耗
-    ];
+    
     
     public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
@@ -44,6 +37,6 @@ public class ColdSource : AbstractMaxwellCard
     /// </summary>
     public override void OnUpgrade()
     {
-        DynamicVars.Energy.UpgradeValueBy(-1m);
+        base.EnergyCost.UpgradeBy(-1);
     }
 }

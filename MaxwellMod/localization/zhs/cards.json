@@ -1,37 +1,77 @@
 {
   "MAXWELLMOD-STRIKE.title": "打击",
-  "MAXWELLMOD-STRIKE.description": "造成 {Damage:diff()} 点伤害。",
+  "MAXWELLMOD-STRIKE.description": "造成{Damage:diff()}点伤害。",
   
   "MAXWELLMOD-DEFEND.title": "防御",
-  "MAXWELLMOD-DEFEND.description": "获得 {Block:diff()} 点 [gold]格挡[/gold]。",
+  "MAXWELLMOD-DEFEND.description": "获得{Block:diff()}点[gold]格挡[/gold]。",
   
   "MAXWELLMOD-HEAT_SOURCE.title": "热源",
   "MAXWELLMOD-HEAT_SOURCE.description": "",
   
   "MAXWELLMOD-COLD_SOURCE.title": "冷源",
   "MAXWELLMOD-COLD_SOURCE.description": "",
+
+  "MAXWELLMOD-ICE_BLADE.title": "冰刀",
+  "MAXWELLMOD-ICE_BLADE.description": "获得{DexterityPower:diff()}层[gold]敏捷[/gold]，在环境温度变为0以上后失去这些[gold]敏捷[/gold]。造成{Damage:diff()}点伤害。",
+
+  "MAXWELLMOD-COLD_SPRAY.title": "喷冷气",
+  "MAXWELLMOD-COLD_SPRAY.description": "如果环境温度小于0，使所有敌人获得{Weak:diff()}层[gold]虚弱[/gold]。",
+
+  "MAXWELLMOD-STELLAR.title": "恒星",
+  "MAXWELLMOD-STELLAR.description": "造成{Damage:diff()}点伤害。回合结束时使两侧的卡牌升温{TempDelta:diff()}。",
+
+  "MAXWELLMOD-BLACKBODY_RADIATION.title": "黑体辐射",
+  "MAXWELLMOD-BLACKBODY_RADIATION.description": "每有1点环境温度，获得1次{Block:diff()}点[gold]格挡[/gold]。本回合被攻击时，每有1点环境温度，对攻击者造成{DamagePerTemp:diff()}点伤害。",
+
+  "MAXWELLMOD-OVERHEAT.title": "过热",
+  "MAXWELLMOD-OVERHEAT.description": "造成{Damage:diff()}点伤害，如果这张牌拥有[gold]冷[/gold]则抽{Cards:diff()}张牌。",
+
+  "MAXWELLMOD-OVERCOLD.title": "过冷",
+  "MAXWELLMOD-OVERCOLD.description": "获得{Block:diff()}点[gold]格挡[/gold]，如果这张牌拥有[gold]热[/gold]则抽{Cards:diff()}张牌。",
+
+  "MAXWELLMOD-HEAT_WIND.title": "热风",
+  "MAXWELLMOD-HEAT_WIND.description": "使你手中的所有牌升温1。",
+
+  "MAXWELLMOD-SOLIDIFICATION.title": "凝固",
+  "MAXWELLMOD-SOLIDIFICATION.description": "使一张手牌降温1，使其获得[gold]保留[/gold]。",
+
+  "MAXWELLMOD-COLD_WALL.title": "冷墙",
+  "MAXWELLMOD-COLD_WALL.description": "将所有手牌里的[gold]冷[/gold]牌变为常温，每转换1张获得1次{Block:diff()}点[gold]格挡[/gold]。",
+
+  "MAXWELLMOD-ENTROPY_INCREASE.title": "熵增",
+  "MAXWELLMOD-ENTROPY_INCREASE.description": "造成{CalculatedDamage:diff()}点伤害。\n你在本回合中每打出过一张有温度的牌，这张牌的伤害就提升{ExtraDamage:diff()}点。",
+
+  "MAXWELLMOD-POTENTIAL_TRAP.title": "势阱",
+  "MAXWELLMOD-POTENTIAL_TRAP.description": "在本场战斗中，你回合内置入弃牌堆的状态牌会被消耗。",
   
   "MAXWELLMOD-DEFLATION.title": "通缩",
-  "MAXWELLMOD-DEFLATION.description": "使你手中的所有牌本回合费用-1并变冷。去除所有卡牌的“态”。",
+  "MAXWELLMOD-DEFLATION.description": "使你手中的所有牌本回合费用-1并变[gold]冷[/gold]。去除所有卡牌的“态”。",
   
   "MAXWELLMOD-RETROSPECT.title": "回溯",
   "MAXWELLMOD-RETROSPECT.description": "消耗1张牌。将消耗堆中所有与该牌温度相同的牌置入手牌。",
   
   "MAXWELLMOD-TEMPERATURE_STRIKE.title": "温度打击",
-  "MAXWELLMOD-TEMPERATURE_STRIKE.description": "造成 {Damage:diff()} 点伤害。如果本卡拥有温度，再造成一次伤害。",
+  "MAXWELLMOD-TEMPERATURE_STRIKE.description": "造成{Damage:diff()}点伤害。如果本卡拥有温度，再造成一次伤害。",
   
   "MAXWELLMOD-MULTIPLE_MEASUREMENT.title": "多次测量",
-  "MAXWELLMOD-MULTIPLE_MEASUREMENT.description": "造成 {Damage:diff()} 点伤害三次。",
+  "MAXWELLMOD-MULTIPLE_MEASUREMENT.description": "造成{Damage:diff()}点伤害三次。",
   
   "MAXWELLMOD-PISTON.title": "活塞",
   "MAXWELLMOD-PISTON.description": "升温时，[gold]丢弃[/gold]一张牌。\n降温时，抽一张牌。",
   
   "MAXWELLMOD-STASH_CARD.title": "暂存",
-  "MAXWELLMOD-STASH_CARD.description": "将至多 {Cards:diff()} 张牌放入暂存区。\n下回合开始时，将这些牌放回手牌。",
+  "MAXWELLMOD-STASH_CARD.description": "将至多{Cards:diff()}张牌放入暂存区。\n下回合开始时，将这些牌放回手牌。",
   
   "MAXWELLMOD-CAR.title": "车",
   "MAXWELLMOD-CAR.description": "在本场战斗中，每当你打出一张[gold]热[/gold]牌，[gold]丢弃[/gold]你最右边的手牌，抽1张牌。",
   
   "MAXWELLMOD-ADIABATIC_EXPANSION.title": "绝热膨胀",
-  "MAXWELLMOD-ADIABATIC_EXPANSION.description": "将两侧手牌降温1。\n下回合额外抽 {Cards:diff()} 张牌。"
+  "MAXWELLMOD-ADIABATIC_EXPANSION.description": "将两侧手牌降温1。\n下回合额外抽{Cards:diff()}张牌。",
+  
+  "MAXWELLMOD-INSULATOR.title": "绝缘体",
+  "MAXWELLMOD-INSULATOR.description": "你没有温度的卡牌获得[gold]绝缘[/gold]。",
+  
+  "MAXWELLMOD-PUSH_PULL.title": "推拉",
+  "MAXWELLMOD-PUSH_PULL.description": "将任意张手牌洗入牌库并抽等量牌。\n每抽取一张牌，对目标造成{Damage:diff()}点伤害。",
+  "MAXWELLMOD-PUSH_PULL.selectionScreenPrompt": "选择任意张手牌洗入牌库。"
 }

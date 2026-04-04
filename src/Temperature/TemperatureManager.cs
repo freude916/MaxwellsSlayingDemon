@@ -81,9 +81,10 @@ public static class TemperatureManager
     {
         Entry.Logger.Info($"[TempManager] ModifyCardTemperature: {card.Id}, delta={delta}");
 
-        if (HasInsulationKeyword(card))
+        if (card.Keywords.Contains(MaxwellKeywords.IsothermalKeyword) ||
+            card.Keywords.Contains(MaxwellKeywords.InsulationKeyword))
         {
-            Entry.Logger.Info("[TempManager] Card has insulation, skipping temperature modification");
+            Entry.Logger.Info("[TempManager] Card has thermal isolation, skipping temperature modification");
             return;
         }
 
@@ -267,46 +268,6 @@ public static class TemperatureManager
         text.Add("Amount", stacks);
         text.Add("Bonus", stacks * 2);
         return text.GetFormattedText();
-    }
-
-    #endregion
-
-    #region 关键词检查
-
-    /// <summary>
-    ///     检查卡牌是否有热词缀
-    /// </summary>
-    public static bool HasHeatKeyword(CardModel card)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-        return card.Keywords.Contains(MaxwellKeywords.HeatKeyword);
-    }
-
-    /// <summary>
-    ///     检查卡牌是否有冷词缀
-    /// </summary>
-    public static bool HasColdKeyword(CardModel card)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-        return card.Keywords.Contains(MaxwellKeywords.ColdKeyword);
-    }
-
-    /// <summary>
-    ///     检查卡牌是否有绿词缀
-    /// </summary>
-    public static bool HasGreenKeyword(CardModel card)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-        return card.Keywords.Contains(MaxwellKeywords.GreenKeyword);
-    }
-
-    /// <summary>
-    ///     检查卡牌是否有绝缘词缀
-    /// </summary>
-    public static bool HasInsulationKeyword(CardModel card)
-    {
-        ArgumentNullException.ThrowIfNull(card);
-        return card.Keywords.Contains(MaxwellKeywords.InsulationKeyword);
     }
 
     #endregion

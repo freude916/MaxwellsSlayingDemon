@@ -1,3 +1,4 @@
+using System.Globalization;
 using Godot;
 using MegaCrit.Sts2.Core.ControllerInput;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -6,15 +7,17 @@ using MegaCrit.Sts2.Core.Nodes.Screens;
 
 namespace MaxwellMod.Stash;
 
+#pragma warning disable CA2213 // Godot manages nodes so needn't
+
 /// <summary>
 ///     暂存区 UI 按钮
 ///     显示暂存区卡牌数量，点击可查看暂存的牌
 /// </summary>
 public partial class NStashButton : Button
 {
-    private const double _animDuration = 0.5;
-    private static readonly Vector2 _hideOffset = new(150f, 0f);
-    private static readonly Vector2 _hoverScale = Vector2.One * 1.25f;
+    private const double AnimDuration = 0.5;
+    private static readonly Vector2 HideOffset = new(150f, 0f);
+    private static readonly Vector2 HoverScale = Vector2.One * 1.25f;
     private Tween? _bumpTween;
     private Label? _countLabel;
     protected Vector2 _hidePosition = new(-160f, 860f);
@@ -114,13 +117,13 @@ public partial class NStashButton : Button
         }
         else
         {
-            GD.Print($"[MaxwellMod] Stash still has {StashPile.Cards.Count} cards, keeping button visible");
+            GD.Print($"[MaxwellMod] Stash still has {StashPile?.Cards.Count} cards, keeping button visible");
         }
     }
 
     private void UpdateCount()
     {
-        if (_countLabel != null && StashPile != null) _countLabel.Text = StashPile.Cards.Count.ToString();
+        if (_countLabel != null && StashPile != null) _countLabel.Text = StashPile.Cards.Count.ToString(CultureInfo.InvariantCulture);
     }
 
     protected void SetAnimInOutPositions()
@@ -131,7 +134,7 @@ public partial class NStashButton : Button
             _posOffset = new Vector2(OffsetRight + 100f, 0f - OffsetBottom + 90f);
             var viewportSize = viewport.GetVisibleRect().Size;
             _showPosition = viewportSize - _posOffset;
-            _hidePosition = _showPosition + _hideOffset;
+            _hidePosition = _showPosition + HideOffset;
         }
     }
 
@@ -140,7 +143,7 @@ public partial class NStashButton : Button
         Visible = true;
         _positionTween?.Kill();
         _positionTween = CreateTween();
-        _positionTween.TweenProperty(this, "position", _showPosition, _animDuration)
+        _positionTween.TweenProperty(this, "position", _showPosition, AnimDuration)
             .SetEase(Tween.EaseType.Out)
             .SetTrans(Tween.TransitionType.Expo);
     }
@@ -149,7 +152,7 @@ public partial class NStashButton : Button
     {
         _positionTween?.Kill();
         _positionTween = CreateTween();
-        _positionTween.TweenProperty(this, "position", _hidePosition, _animDuration)
+        _positionTween.TweenProperty(this, "position", _hidePosition, AnimDuration)
             .SetEase(Tween.EaseType.In)
             .SetTrans(Tween.TransitionType.Expo);
         _positionTween.Finished += () => { Visible = false; };
@@ -177,7 +180,7 @@ public partial class NStashButton : Button
         if (_icon != null && !Disabled)
         {
             var tween = CreateTween();
-            tween.TweenProperty(_icon, "scale", _hoverScale, 0.1);
+            tween.TweenProperty(_icon, "scale", HoverScale, 0.1);
         }
     }
 
