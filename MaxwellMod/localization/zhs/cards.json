@@ -15,7 +15,7 @@
   "MAXWELLMOD-ICE_BLADE.description": "获得{DexterityPower:diff()}层[gold]敏捷[/gold]，在环境温度变为0以上后失去这些[gold]敏捷[/gold]。造成{Damage:diff()}点伤害。",
 
   "MAXWELLMOD-COLD_SPRAY.title": "喷冷气",
-  "MAXWELLMOD-COLD_SPRAY.description": "如果环境温度小于0，使所有敌人获得{Weak:diff()}层[gold]虚弱[/gold]。",
+  "MAXWELLMOD-COLD_SPRAY.description": "如果环境温度小于0，使所有敌人获得{WeakPower:diff()}层[gold]虚弱[/gold]。",
 
   "MAXWELLMOD-STELLAR.title": "恒星",
   "MAXWELLMOD-STELLAR.description": "造成{Damage:diff()}点伤害。回合结束时使两侧的卡牌升温{TempDelta:diff()}。",

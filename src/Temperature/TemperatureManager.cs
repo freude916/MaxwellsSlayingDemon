@@ -95,7 +95,7 @@ public static class TemperatureManager
         }
 
         var oldTemp = GetCardTemperature(card);
-        var newTemp = Math.Clamp(-1, oldTemp + delta, 1);
+        var newTemp = Math.Clamp(oldTemp + delta, -1, 1);
         if (newTemp == oldTemp)
         {
             Entry.Logger.Info("[TempManager] Temperature unchanged after clamp, skipping");
@@ -135,7 +135,7 @@ public static class TemperatureManager
         }
         else
         {
-            Entry.Logger.Info("[TempManager] Card does NOT implement ICardTemperatureListener");
+            Entry.Logger.Debug("[TempManager] Card does NOT implement ICardTemperatureListener");
         }
     }
 
