@@ -18,10 +18,10 @@ public abstract class AbstractMaxwellRelic : CustomRelicModel
     /// <summary>
     ///     轮廓图标路径
     /// </summary>
-    public override string PackedIconOutlinePath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
+    protected override string PackedIconOutlinePath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
 
     /// <summary>
     ///     大图标路径 (256x256)
     /// </summary>
-    public override string BigIconPath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
+    protected override string BigIconPath => $"res://MaxwellMod/images/relics/{Id.Entry.ToLowerInvariant()}.png";
 }

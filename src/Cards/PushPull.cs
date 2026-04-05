@@ -16,11 +16,11 @@ public class PushPull : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(3m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(3m, ValueProp.Move)];
 
-    public override HashSet<CardTag> CanonicalTags => [];
+    protected override HashSet<CardTag> CanonicalTags => [];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -47,7 +47,7 @@ public class PushPull : AbstractMaxwellCard
                 .Execute(choiceContext);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(1m);
     }

@@ -18,13 +18,13 @@ public class Overcold : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new BlockVar(4m, ValueProp.Move),
         new CardsVar(1)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
 
@@ -32,7 +32,7 @@ public class Overcold : AbstractMaxwellCard
             await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Block.UpgradeValueBy(3m);
     }

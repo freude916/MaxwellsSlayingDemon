@@ -16,9 +16,9 @@ public class MultipleMeasurement : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(0m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(0m, ValueProp.Move)];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -31,7 +31,7 @@ public class MultipleMeasurement : AbstractMaxwellCard
                 .Execute(choiceContext);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(1m);
     }

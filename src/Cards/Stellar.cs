@@ -30,13 +30,13 @@ public class Stellar : AbstractMaxwellCard
         MaxwellKeywords.IsothermalKeyword
     ];
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new DamageVar(10m, ValueProp.Move),
         new DynamicVar(TempDeltaKey, 1m)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -63,7 +63,7 @@ public class Stellar : AbstractMaxwellCard
         return Task.CompletedTask;
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3m);
     }

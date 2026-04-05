@@ -18,11 +18,11 @@ public class AdiabaticExpansion : AbstractMaxwellCard
     {
     }
 
-    public override HashSet<CardTag> CanonicalTags => [];
+    protected override HashSet<CardTag> CanonicalTags => [];
 
-    public override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(2)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(2)];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -31,7 +31,7 @@ public class AdiabaticExpansion : AbstractMaxwellCard
         await PowerCmd.Apply<DrawCardsNextTurnPower>(Owner.Creature, DynamicVars.Cards.BaseValue, Owner.Creature, this);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Cards.UpgradeValueBy(1);
     }

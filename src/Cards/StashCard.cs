@@ -26,9 +26,9 @@ public class StashCard(): CustomCardModel(0, CardType.Skill, CardRarity.Token, T
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust, CardKeyword.Retain];
 
-    public override HashSet<CardTag> CanonicalTags => [];
+    protected override HashSet<CardTag> CanonicalTags => [];
 
-    public override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(2)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new CardsVar(2)];
 
     public static async Task<StashCard?> CreateInHand(Player owner, CombatState combatState)
     {
@@ -50,7 +50,7 @@ public class StashCard(): CustomCardModel(0, CardType.Skill, CardRarity.Token, T
     /// <summary>
     ///     打出效果：选择手牌放入暂存区
     /// </summary>
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -105,7 +105,7 @@ public class StashCard(): CustomCardModel(0, CardType.Skill, CardRarity.Token, T
     /// <summary>
     ///     升级效果：可暂存 3 张牌（原 2 张）
     /// </summary>
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Cards.UpgradeValueBy(1);
     }

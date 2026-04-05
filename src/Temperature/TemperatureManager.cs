@@ -264,10 +264,21 @@ public static class TemperatureManager
         };
         if (key == null) return null;
 
-        var text = new LocString("static_hover_tips", key);
-        text.Add("Amount", stacks);
-        text.Add("Bonus", stacks * 2);
-        return text.GetFormattedText();
+        var text = LocString.GetIfExists("static_hover_tips", key);
+        if (text != null)
+        {
+            text.Add("Amount", stacks);
+            text.Add("Bonus", stacks * 2);
+            return text.GetFormattedText();
+        }
+
+        Entry.Logger.Warn($"[TempManager] Missing loc key static_hover_tips/{key}, using fallback text");
+        return state switch
+        {
+            StateType.Lively => $"[gold]活泼[/gold]{stacks}层 (伤害+{stacks * 2})",
+            StateType.Stable => $"[gold]稳定[/gold]{stacks}层 (点+{stacks * 2})",
+            _ => null
+        };
     }
 
     #endregion

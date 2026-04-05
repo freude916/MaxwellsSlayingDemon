@@ -20,7 +20,7 @@ public class EntropyIncrease : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new CalculationBaseVar(7m),
         new ExtraDamageVar(2m),
@@ -33,7 +33,7 @@ public class EntropyIncrease : AbstractMaxwellCard
         )
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -45,7 +45,7 @@ public class EntropyIncrease : AbstractMaxwellCard
             .Execute(choiceContext);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.CalculationBase.UpgradeValueBy(3m);
     }

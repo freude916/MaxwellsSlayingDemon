@@ -15,7 +15,7 @@ public class Solidification : AbstractMaxwellCard
     {
     }
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -33,7 +33,7 @@ public class Solidification : AbstractMaxwellCard
         selectedCard.AddKeyword(CardKeyword.Retain);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         EnergyCost.UpgradeBy(-1);
     }

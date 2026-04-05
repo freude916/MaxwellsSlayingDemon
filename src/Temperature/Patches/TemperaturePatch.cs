@@ -10,6 +10,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Hooks;
 using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
+using System.Reflection;
 
 namespace MaxwellMod.Temperature.Patches;
 
@@ -243,19 +244,29 @@ public static class StateBlockPatch
 
 /// <summary>
 ///     将卡牌态以额外文本的形式追加到卡牌描述底部（类似 extraCardText）
+///     直接补丁到私有核心重载，避免 public wrapper 被 JIT 内联后不触发。
 /// </summary>
-[HarmonyPatch(typeof(CardModel), nameof(CardModel.GetDescriptionForPile), typeof(PileType), typeof(Creature))]
+[HarmonyPatch]
 public static class CardStateExtraCardTextPatch
 {
+    private static MethodBase TargetMethod()
+    {
+        var previewType = AccessTools.Inner(typeof(CardModel), "DescriptionPreviewType")
+                          ?? throw new MissingMemberException(typeof(CardModel).FullName, "DescriptionPreviewType");
+
+        return AccessTools.Method(typeof(CardModel), "GetDescriptionForPile", [typeof(PileType), previewType, typeof(Creature)])
+               ?? throw new MissingMethodException(typeof(CardModel).FullName, "GetDescriptionForPile(PileType, DescriptionPreviewType, Creature)");
+    }
+
     public static void Postfix(CardModel __instance, ref string __result)
     {
         if (__instance.CombatState == null) return;
 
         var extraText = TemperatureManager.GetCardStateExtraCardText(__instance);
         if (string.IsNullOrEmpty(extraText)) return;
-
+        
         __result = string.IsNullOrWhiteSpace(__result)
-            ? $"[purple]{extraText}[/purple]"
-            : $"{__result}\n[purple]{extraText}[/purple]";
+            ? extraText
+            : $"{__result}\n{extraText}";
     }
 }

@@ -19,14 +19,14 @@ public class TemperatureStrike : AbstractMaxwellCard
     /// <summary>
     ///     动态变量 (7 点伤害)
     /// </summary>
-    public override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(7m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(7m, ValueProp.Move)];
 
     /// <summary>
     ///     打出效果
     ///     - 造成一次伤害
     ///     - 如果本卡拥有温度，再造成一次伤害
     /// </summary>
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -49,7 +49,7 @@ public class TemperatureStrike : AbstractMaxwellCard
     /// <summary>
     ///     升级效果
     /// </summary>
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3m);
     }

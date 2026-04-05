@@ -19,7 +19,7 @@ public class Retrospect : AbstractMaxwellCard
 
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -43,7 +43,7 @@ public class Retrospect : AbstractMaxwellCard
         if (cardsToReturn.Count > 0) await CardPileCmd.Add(cardsToReturn, PileType.Hand);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         EnergyCost.UpgradeBy(-1);
     }

@@ -1,5 +1,7 @@
 using Godot;
 using HarmonyLib;
+using MegaCrit.Sts2.Core.Entities.Cards;
+using MegaCrit.Sts2.Core.Nodes.Cards;
 using MegaCrit.Sts2.Core.Nodes.Cards.Holders;
 
 namespace MaxwellMod.Temperature.Patches;
@@ -30,16 +32,38 @@ public static class HandTitleBackgroundPatch
         RefreshTitleBackground(__instance);
     }
 
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(NCard), nameof(NCard.UpdateVisuals))]
+    public static void UpdateVisualsPostfix(NCard __instance, PileType pileType)
+    {
+        RefreshTitleBackground(__instance, pileType == PileType.Hand);
+    }
+
+    [HarmonyPostfix]
+    [HarmonyPatch(typeof(NCardHolder), nameof(NCardHolder.ReassignToCard))]
+    public static void ReassignToCardPostfix(NCardHolder __instance)
+    {
+        if (__instance is NHandCardHolder handHolder)
+        {
+            RefreshTitleBackground(handHolder);
+        }
+    }
+
     private static void RefreshTitleBackground(NHandCardHolder holder)
     {
         if (!GodotObject.IsInstanceValid(holder)) return;
+        RefreshTitleBackground(holder.CardNode, inHandPile: true);
+    }
 
-        var cardNode = holder.CardNode;
+    private static void RefreshTitleBackground(NCard? cardNode, bool inHandPile)
+    {
+        if (!GodotObject.IsInstanceValid(cardNode)) return;
+
         var model = cardNode?.Model;
         var titleLabel = cardNode?.GetNodeOrNull<Label>("%TitleLabel");
         if (titleLabel == null) return;
 
-        if (!EnableTemperatureTitleBackground || model?.CombatState == null)
+        if (!EnableTemperatureTitleBackground || !inHandPile || model?.CombatState == null)
         {
             RestoreDefault(titleLabel);
             return;

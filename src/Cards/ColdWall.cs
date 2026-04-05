@@ -18,12 +18,12 @@ public class ColdWall : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new BlockVar(4m, ValueProp.Move)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -40,7 +40,7 @@ public class ColdWall : AbstractMaxwellCard
         }
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         EnergyCost.UpgradeBy(-1);
     }

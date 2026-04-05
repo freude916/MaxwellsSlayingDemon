@@ -14,16 +14,16 @@ public class Car : AbstractMaxwellCard
     {
     }
 
-    public override HashSet<CardTag> CanonicalTags => [];
+    protected override HashSet<CardTag> CanonicalTags => [];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         await CreatureCmd.TriggerAnim(Owner.Creature, "Cast", Owner.Character.CastAnimDelay);
         await PowerCmd.Apply<CarPower>(Owner.Creature, 1, Owner.Creature, this);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         EnergyCost.UpgradeBy(-1);
     }

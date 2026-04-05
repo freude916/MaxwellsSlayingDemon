@@ -1,7 +1,6 @@
-[gd_scene load_steps=3 format=3 uid="uid://cs3a5onikvhi4"]
+[gd_scene load_steps=2 format=3 uid="uid://cs3a5onikvhi4"]
 
 [ext_resource type="Texture2D" path="res://MaxwellMod/images/energy_maxwell.png" uid="uid://6d7j100yrgxe" id="1_85qf2"]
-[ext_resource type="Script" path="res://src/Core/Nodes/Vfx/Utilities/NParticlesContainer.cs" id="2_1qu75"]
 
 [node name="MaxwellEnergyCounter" type="Control"]
 layout_mode = 3
@@ -9,12 +8,6 @@ anchors_preset = 0
 offset_right = 128.0
 offset_bottom = 128.0
 metadata/_edit_lock_ = true
-
-[node name="EnergyVfxBack" type="Node2D" parent="." node_paths=PackedStringArray("_particles")]
-unique_name_in_owner = true
-position = Vector2(64, 64)
-script = ExtResource("2_1qu75")
-_particles = []
 
 [node name="Layers" type="Control" parent="."]
 unique_name_in_owner = true
@@ -24,12 +17,6 @@ anchor_right = 1.0
 anchor_bottom = 1.0
 grow_horizontal = 2
 grow_vertical = 2
-
-[node name="RotationLayers" type="Control" parent="Layers"]
-unique_name_in_owner = true
-anchors_preset = 0
-offset_right = 40.0
-offset_bottom = 40.0
 
 [node name="Layer1" type="TextureRect" parent="Layers"]
 layout_mode = 1
@@ -44,12 +31,6 @@ grow_horizontal = 2
 grow_vertical = 2
 texture = ExtResource("1_85qf2")
 expand_mode = 1
-
-[node name="EnergyVfxFront" type="Node2D" parent="." node_paths=PackedStringArray("_particles")]
-unique_name_in_owner = true
-position = Vector2(64, 64)
-script = ExtResource("2_1qu75")
-_particles = []
 
 [node name="Label" type="Label" parent="."]
 layout_mode = 1

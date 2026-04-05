@@ -22,18 +22,18 @@ public class BlackbodyRadiation : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<IHoverTip> ExtraHoverTips =>
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
         HoverTipFactory.FromPower<BlackbodyRadiationPower>()
     ];
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new BlockVar(1m, ValueProp.Move),
         new DynamicVar(DamagePerTempKey, 1m)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -47,7 +47,7 @@ public class BlackbodyRadiation : AbstractMaxwellCard
             await PowerCmd.Apply<BlackbodyRadiationPower>(Owner.Creature, retaliationLayers, Owner.Creature, this);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Block.UpgradeValueBy(1m);
     }

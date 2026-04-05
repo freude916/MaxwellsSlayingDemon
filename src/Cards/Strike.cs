@@ -18,7 +18,7 @@ public class Strike : AbstractMaxwellCard
     /// <summary>
     ///     卡牌标签 (Strike)
     /// </summary>
-    public override HashSet<CardTag> CanonicalTags =>
+    protected override HashSet<CardTag> CanonicalTags =>
     [
         CardTag.Strike
     ];
@@ -26,12 +26,12 @@ public class Strike : AbstractMaxwellCard
     /// <summary>
     ///     动态变量 (6点伤害)
     /// </summary>
-    public override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(6m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new DamageVar(6m, ValueProp.Move)];
 
     /// <summary>
     ///     打出效果
     /// </summary>
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -45,7 +45,7 @@ public class Strike : AbstractMaxwellCard
     /// <summary>
     ///     升级效果
     /// </summary>
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3m);
     }

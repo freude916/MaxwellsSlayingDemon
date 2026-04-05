@@ -18,5 +18,9 @@
   "MAXWELLMOD-ISOTHERMALKEYWORD.title": "恒温",
   "MAXWELLMOD-ISOTHERMALKEYWORD.description": "不会被相邻传热影响。",
   "MAXWELLMOD-INSULATIONKEYWORD.title": "绝缘",
-  "MAXWELLMOD-INSULATIONKEYWORD.description": "不会被相邻传热影响。不会把热传给别的卡牌。不会引起环境温度变化。"
+  "MAXWELLMOD-INSULATIONKEYWORD.description": "不会被相邻传热影响。不会把热传给别的卡牌。不会引起环境温度变化。",
+  "MAXWELLMOD-DEFLECTION_KEYWORD.title": "偏转",
+  "MAXWELLMOD-DEFLECTION_KEYWORD.description": "当你拥有[gold]偏转[/gold]能力时，打出后进入抽牌堆顶。",
+  "MAXWELLMOD-DEFLECTIONKEYWORD.title": "偏转",
+  "MAXWELLMOD-DEFLECTIONKEYWORD.description": "当你拥有[gold]偏转[/gold]能力时，打出后进入抽牌堆顶。"
 }

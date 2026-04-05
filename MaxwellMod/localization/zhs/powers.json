@@ -14,6 +14,9 @@
   "MAXWELLMOD-BLACKBODY_RADIATION_POWER.title": "黑体辐射",
   "MAXWELLMOD-BLACKBODY_RADIATION_POWER.description": "本回合被攻击时，每有1点环境温度，对攻击者造成点伤害。",
   "MAXWELLMOD-BLACKBODY_RADIATION_POWER.smartDescription": "本回合被攻击时，每有1点环境温度，对攻击者造成[blue]{Amount}[/blue]点伤害。",
+  "MAXWELLMOD-DEFLECTION_POWER.title": "偏转",
+  "MAXWELLMOD-DEFLECTION_POWER.description": "你打出的[gold]偏转[/gold]牌会进入抽牌堆顶。",
+  "MAXWELLMOD-DEFLECTION_POWER.smartDescription": "你打出的[gold]偏转[/gold]牌会进入抽牌堆顶。",
   "MAXWELLMOD-STASH_POWER.title": "暂存",
   "MAXWELLMOD-STASH_POWER.description": "将牌存到暂存区",
   "MAXWELLMOD-STASH_POWER.smartDescription": "[blue]{Amount}[/blue] 张牌正在暂存区中。"

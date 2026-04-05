@@ -18,13 +18,13 @@ public class Overheat : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new DamageVar(4m, ValueProp.Move),
         new CardsVar(1)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -39,7 +39,7 @@ public class Overheat : AbstractMaxwellCard
             await CardPileCmd.Draw(choiceContext, DynamicVars.Cards.IntValue, Owner);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3m);
     }

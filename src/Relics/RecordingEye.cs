@@ -1,9 +1,11 @@
 using MaxwellMod.Cards;
+using MaxwellMod.Powers;
 using MaxwellMod.Stash;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Relics;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
+using MegaCrit.Sts2.Core.HoverTips;
 using MegaCrit.Sts2.Core.Models;
 
 namespace MaxwellMod.Relics;
@@ -19,6 +21,11 @@ public class RecordingEye : AbstractMaxwellRelic
     ///     遗物稀有度
     /// </summary>
     public override RelicRarity Rarity => RelicRarity.Starter;
+
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>
+    [
+        HoverTipFactory.FromPower<DeflectionPower>()
+    ];
 
     public override async Task BeforeHandDraw(Player player, PlayerChoiceContext choiceContext, CombatState combatState)
     {

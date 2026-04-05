@@ -12,7 +12,7 @@ namespace MaxwellMod.Cards;
 /// <summary>
 ///     冰刀：
 ///     - 获得敏捷
-///     - 当环境温度由 <= 0 变为 > 0 时失去这些敏捷
+///     - 当环境温度由 &lt;= 0 变为 &gt; 0 时失去这些敏捷
 ///     - 造成伤害
 /// </summary>
 public class IceBlade : AbstractMaxwellCard
@@ -21,18 +21,18 @@ public class IceBlade : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<IHoverTip> ExtraHoverTips =>
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
         HoverTipFactory.FromPower<DexterityPower>()
     ];
 
-    public override IEnumerable<DynamicVar> CanonicalVars =>
+    protected override IEnumerable<DynamicVar> CanonicalVars =>
     [
         new DamageVar(6m, ValueProp.Move),
         new PowerVar<DexterityPower>(2m)
     ];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
         ArgumentNullException.ThrowIfNull(cardPlay.Target);
@@ -47,7 +47,7 @@ public class IceBlade : AbstractMaxwellCard
             .Execute(choiceContext);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Damage.UpgradeValueBy(3m);
     }

@@ -18,7 +18,7 @@ public class Defend : AbstractMaxwellCard
     /// <summary>
     ///     卡牌标签 (Defend)
     /// </summary>
-    public override HashSet<CardTag> CanonicalTags =>
+    protected override HashSet<CardTag> CanonicalTags =>
     [
         CardTag.Defend
     ];
@@ -26,12 +26,12 @@ public class Defend : AbstractMaxwellCard
     /// <summary>
     ///     动态变量 (5点格挡)
     /// </summary>
-    public override IEnumerable<DynamicVar> CanonicalVars => [new BlockVar(5m, ValueProp.Move)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new BlockVar(5m, ValueProp.Move)];
 
     /// <summary>
     ///     打出效果
     /// </summary>
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         await CreatureCmd.GainBlock(Owner.Creature, DynamicVars.Block, cardPlay);
     }
@@ -39,7 +39,7 @@ public class Defend : AbstractMaxwellCard
     /// <summary>
     ///     升级效果
     /// </summary>
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Block.UpgradeValueBy(3m);
     }

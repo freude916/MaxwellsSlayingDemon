@@ -39,4 +39,10 @@ public static class MaxwellKeywords
     /// </summary>
     [CustomEnum(nameof(InsulationKeyword))] [KeywordProperties(AutoKeywordPosition.Before)]
     public static CardKeyword InsulationKeyword;
+
+    /// <summary>
+    ///     偏转词缀 - 在拥有偏转能力时，打出后进入抽牌堆顶
+    /// </summary>
+    [CustomEnum(nameof(DeflectionKeyword))] [KeywordProperties(AutoKeywordPosition.Before)]
+    public static CardKeyword DeflectionKeyword;
 }

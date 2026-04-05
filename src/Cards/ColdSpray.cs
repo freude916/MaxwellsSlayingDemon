@@ -19,14 +19,14 @@ public class ColdSpray : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<IHoverTip> ExtraHoverTips =>
+    protected override IEnumerable<IHoverTip> ExtraHoverTips =>
     [
         HoverTipFactory.FromPower<WeakPower>()
     ];
 
-    public override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<WeakPower>(2m)];
+    protected override IEnumerable<DynamicVar> CanonicalVars => [new PowerVar<WeakPower>(2m)];
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -36,7 +36,7 @@ public class ColdSpray : AbstractMaxwellCard
         await PowerCmd.Apply<WeakPower>(CombatState.HittableEnemies, DynamicVars.Weak.BaseValue, Owner.Creature, this);
     }
 
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
         DynamicVars.Weak.UpgradeValueBy(1m);
     }

@@ -1,7 +1,6 @@
 using MaxwellMod.Keywords;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Localization.DynamicVars;
 
 namespace MaxwellMod.Cards;
 
@@ -10,21 +9,21 @@ namespace MaxwellMod.Cards;
 /// </summary>
 public class HeatSource : AbstractMaxwellCard
 {
-    public HeatSource() : base(1, CardType.Skill, CardRarity.Basic, TargetType.None)
+    public HeatSource() : base(0, CardType.Skill, CardRarity.Basic, TargetType.None)
     {
     }
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => [MaxwellKeywords.HeatKeyword];
+    public override IEnumerable<CardKeyword> CanonicalKeywords => [MaxwellKeywords.HeatKeyword, MaxwellKeywords.DeflectionKeyword];
 
     /// <summary>
     ///     卡牌标签 (Strike)
     /// </summary>
-    public override HashSet<CardTag> CanonicalTags =>
+    protected override HashSet<CardTag> CanonicalTags =>
     [
     ];
 
 
-    public override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
+    protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
@@ -35,8 +34,8 @@ public class HeatSource : AbstractMaxwellCard
     /// <summary>
     ///     升级效果
     /// </summary>
-    public override void OnUpgrade()
+    protected override void OnUpgrade()
     {
-        base.EnergyCost.UpgradeBy(-1);
+        AddKeyword(CardKeyword.Innate);
     }
 }
