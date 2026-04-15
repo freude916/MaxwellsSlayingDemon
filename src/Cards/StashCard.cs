@@ -1,6 +1,5 @@
 using BaseLib.Abstracts;
 using BaseLib.Utils;
-using Godot;
 using MaxwellMod.Stash;
 using MegaCrit.Sts2.Core.CardSelection;
 using MegaCrit.Sts2.Core.Combat;
@@ -10,7 +9,6 @@ using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.CardPools;
-using MegaCrit.Sts2.Core.Nodes.Rooms;
 
 namespace MaxwellMod.Cards;
 
@@ -52,10 +50,6 @@ public class StashCard() : CustomCardModel(0, CardType.Skill, CardRarity.Token, 
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
-        // 使用 DynamicVars.Cards 获取可暂存的卡牌数量
-
-        // 直接使用 CardSelectCmd
-        var handPile = PileType.Hand.GetPile(Owner);
         var prefs = new CardSelectorPrefs(
             SelectionScreenPrompt,
             0,
@@ -70,27 +64,13 @@ public class StashCard() : CustomCardModel(0, CardType.Skill, CardRarity.Token, 
             this
         )).ToList();
 
-        Entry.Logger.Info($"[MaxwellMod] [Stash] StashCard: Selected {selectedCards.Count} cards");
-
         // 如果没有选择卡牌，直接返回
         if (selectedCards.Count == 0) return;
 
         // 将选中的卡牌移动到暂存区
         foreach (var card in selectedCards)
         {
-            GD.Print($"[MaxwellMod] StashCard: Moving card {card.Id.Entry} to stash");
-
-            // 从手牌 UI 移除（使用 NPlayerHand.Remove 方法）
-            var hand = NCombatRoom.Instance!.Ui.Hand; // 战斗外不可能有 OnPlay 吧
-            var cardHolder = hand.GetCardHolder(card);
-            if (cardHolder != null) hand.RemoveCardHolder(cardHolder);
-
-            // 从手牌数据移除
-            handPile.RemoveInternal(card);
-            handPile.InvokeCardRemoveFinished();
-
-            // 添加到暂存区
-            StashManager.AddCardToStash(Owner, card);
+            await CardPileCmd.Add(card, StashPile.StashPileType);
         }
 
         // 添加暂存 Power，用于下回合开始时返回卡牌

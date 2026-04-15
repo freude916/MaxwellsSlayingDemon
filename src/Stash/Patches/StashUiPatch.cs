@@ -2,6 +2,8 @@ using System.Runtime.CompilerServices;
 using Godot;
 using HarmonyLib;
 using MegaCrit.Sts2.Core.Combat;
+using MegaCrit.Sts2.Core.Context;
+using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Nodes.Combat;
 
@@ -18,11 +20,12 @@ public static class StashUiPatch
     {
         try
         {
-            var me = state.Players[0];
+            var me = LocalContext.GetMe(state);
+            if (me == null) return;
             var pilesContainer = __instance.GetNode<NCombatPilesContainer>("%CombatPileContainer");
             InjectStashUI(pilesContainer, me);
         }
-        catch (Exception ex)
+        catch (Exception ex) when (ex is InvalidOperationException)
         {
             GD.PrintErr($"[MaxwellMod] Error injecting Stash UI: {ex}");
         }
@@ -39,15 +42,14 @@ public static class StashUiPatch
         }
 
         var node = stashScene.Instantiate();
-        var stashButton = node as NStashButton;
-        if (stashButton == null)
+        if (node is not NStashButton stashButton)
         {
             GD.PrintErr($"[MaxwellMod] Failed to cast to NStashButton! Actual type: {node.GetType().FullName}");
             node.QueueFree();
             return;
         }
 
-        var stash = StashManager.GetOrCreateStash(player);
+        var stash = StashPile.StashPileType.GetPile(player);
         stashButton.Initialize(player, stash);
 
         stashButton.SetAnchorsPreset(Control.LayoutPreset.BottomRight);

@@ -1,4 +1,3 @@
-using System.Linq;
 using Godot;
 using MaxwellMod.Powers;
 using MegaCrit.Sts2.Core.Combat;
@@ -25,23 +24,17 @@ public class StashPower : AbstractMaxwellPower
     {
         if (player != Owner.Player) return;
 
-        var stashPile = StashManager.GetOrCreateStash(player);
+        var stashPile = StashPile.StashPileType.GetPile(player);
 
         if (stashPile.Cards.Count == 0) return;
 
         GD.Print($"[MaxwellMod] StashPower: Returning {stashPile.Cards.Count} cards to hand");
 
-        // 复制列表
         var cardsToReturn = stashPile.Cards.ToList();
 
-        // 先从暂存区移除所有卡牌
-        foreach (var card in cardsToReturn) StashManager.RemoveCardFromStash(player, card);
-
-        // 使用 CardPileCmd.Add 正确添加到手牌（包括 UI）
         await CardPileCmd.Add(cardsToReturn, PileType.Hand);
 
-        // 移除这个 Power（暂存已清空）
-        Owner.RemovePowerInternal(this);
+        await PowerCmd.Remove(this);
 
         GD.Print($"[MaxwellMod] StashPower: Returned {cardsToReturn.Count} cards to hand");
     }
