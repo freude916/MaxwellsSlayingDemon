@@ -8,7 +8,7 @@ namespace MaxwellMod.Powers;
 
 /// <summary>
 ///     冰刀提供的临时敏捷：
-///     当环境温度从 <= 0 变为 > 0 时，移除对应敏捷。
+///     当环境温度 > 0 时，移除对应敏捷。
 /// </summary>
 public class IceBladeDexPower : AbstractMaxwellPower
 {
@@ -22,12 +22,13 @@ public class IceBladeDexPower : AbstractMaxwellPower
         if (power.Owner != Owner) return;
 
         var newTemp = environTempPower.Amount;
-        var oldTemp = newTemp - (int)amount;
 
-        if (oldTemp > 0 || newTemp <= 0) return;
+        if (newTemp > 0)
+        {
+            Flash();
 
-        Flash();
-        await PowerCmd.Apply<DexterityPower>(Owner, -Amount, Owner, null, silent: true);
-        await PowerCmd.Remove(this);
+            await PowerCmd.Apply<DexterityPower>(Owner, -Amount, Owner, null, true);
+            await PowerCmd.Remove(this);
+        }
     }
 }

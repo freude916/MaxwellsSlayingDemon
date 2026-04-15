@@ -5,31 +5,61 @@ using MaxwellMod.Powers;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Models;
 
 namespace MaxwellMod.Temperature;
 
 /// <summary>
-///     温度系统的核心管理器
+///     温度系统的核心管理器（规则层）
 /// </summary>
 public static class TemperatureManager
 {
-    // 使用 SpireField 存储卡牌温度
-    // 默认温度由关键词推导：热牌 +1，冷牌 -1，其余为 0
-    public static readonly SpireField<CardModel, int> CardTemperatureField = new(card =>
+    private const int MinTemperature = -1;
+    private const int MaxTemperature = 1;
+
+    private static readonly SpireField<CardModel, int> CardTemperatureField = new(card =>
     {
         if (card.Keywords.Contains(MaxwellKeywords.HeatKeyword)) return 1;
         if (card.Keywords.Contains(MaxwellKeywords.ColdKeyword)) return -1;
         return 0;
     });
 
-    // 态：用两个字段分别存储类型和层数
-    public static readonly SpireField<CardModel, StateType> CardStateTypeField = new(() => StateType.None);
-    public static readonly SpireField<CardModel, int> CardStateStacksField = new(() => 0);
+    private static readonly SpireField<CardModel, ReactivityType> CardReactivityTypeField =
+        new(() => ReactivityType.None);
 
-    // 存储卡牌在手牌中的索引（在卡牌打出前记录，打出后使用）
-    public static readonly SpireField<CardModel, int> HandIndexField = new(() => -1);
+    private static readonly SpireField<CardModel, int> CardReactivityStacksField = new(() => 0);
+
+    /// <summary>
+    ///     规则层通知 UI 层某张卡需要刷新显示
+    /// </summary>
+    public static event Action<CardModel>? CardVisualRefreshRequested;
+
+    #region 事件通知
+
+    private static void NotifyCardsChanged(IEnumerable<CardModel> cards)
+    {
+        HashSet<CardModel> distinctCards = new(ReferenceEqualityComparer.Instance);
+        foreach (var card in cards)
+            distinctCards.Add(card);
+
+        if (distinctCards.Count == 0) return;
+
+        HashSet<PlayerCombatState> combatStates = new(ReferenceEqualityComparer.Instance);
+        foreach (var card in distinctCards)
+        {
+            var combatState = card.Owner.PlayerCombatState;
+            if (combatState != null)
+                combatStates.Add(combatState);
+        }
+
+        foreach (var combatState in combatStates)
+            combatState.RecalculateCardValues();
+
+        foreach (var card in distinctCards)
+            CardVisualRefreshRequested?.Invoke(card);
+    }
+
+    #endregion
 
     #region 全局温度
 
@@ -46,14 +76,11 @@ public static class TemperatureManager
     /// <summary>
     ///     修改全局温度
     /// </summary>
-    /// <param name="player">目标玩家</param>
-    /// <param name="delta">温度变化量</param>
     public static async Task ModifyGlobalTemperature(Player player, int delta)
     {
         ArgumentNullException.ThrowIfNull(player);
         if (delta == 0) return;
 
-        // PowerCmd.Apply 本身会处理叠加逻辑：如果 Power 不存在则创建，存在则叠加
         await PowerCmd.Apply<EnvironTempPower>(
             player.Creature,
             delta,
@@ -71,71 +98,161 @@ public static class TemperatureManager
     /// </summary>
     public static int GetCardTemperature(CardModel card)
     {
+        ArgumentNullException.ThrowIfNull(card);
         return CardTemperatureField.Get(card);
     }
 
     /// <summary>
-    ///     修改卡牌温度值（会触发 ICardTemperatureListener 回调）
+    ///     对单卡应用温度变化（统一入口）
     /// </summary>
-    public static void ModifyCardTemperature(CardModel card, int delta, PlayerChoiceContext choiceContext)
+    public static async Task<TemperatureChangeResult> ApplyTemperatureDeltaAsync(
+        CardModel card,
+        int requestedDelta,
+        PlayerChoiceContext choiceContext,
+        TemperatureCause cause)
     {
-        Entry.Logger.Info($"[TempManager] ModifyCardTemperature: {card.Id}, delta={delta}");
+        ArgumentNullException.ThrowIfNull(card);
+        ArgumentNullException.ThrowIfNull(choiceContext);
 
-        if (card.Keywords.Contains(MaxwellKeywords.IsothermalKeyword) ||
-            card.Keywords.Contains(MaxwellKeywords.InsulationKeyword))
+        var result = await ApplyTemperatureDeltaCoreAsync(card, requestedDelta, choiceContext, cause);
+        if (result.AppliedDelta != 0 || result.ReactivityChanged)
+            NotifyCardsChanged([card]);
+
+        return result;
+    }
+
+    /// <summary>
+    ///     对一组卡牌顺序应用温度变化（统一入口）
+    /// </summary>
+    public static async Task<IReadOnlyList<TemperatureChangeResult>> ApplyTemperatureBatchAsync(
+        IEnumerable<CardModel> cards,
+        int requestedDelta,
+        PlayerChoiceContext choiceContext,
+        TemperatureCause cause)
+    {
+        ArgumentNullException.ThrowIfNull(cards);
+        ArgumentNullException.ThrowIfNull(choiceContext);
+
+        List<TemperatureChangeResult> results = [];
+        List<CardModel> changedCards = [];
+
+        foreach (var card in cards)
         {
-            Entry.Logger.Info("[TempManager] Card has thermal isolation, skipping temperature modification");
-            return;
+            var result = await ApplyTemperatureDeltaCoreAsync(card, requestedDelta, choiceContext, cause);
+            results.Add(result);
+
+            if (result.AppliedDelta != 0 || result.ReactivityChanged)
+                changedCards.Add(card);
         }
 
-        if (delta == 0)
+        NotifyCardsChanged(changedCards);
+        return results;
+    }
+
+    private static async Task<TemperatureChangeResult> ApplyTemperatureDeltaCoreAsync(
+        CardModel card,
+        int requestedDelta,
+        PlayerChoiceContext choiceContext,
+        TemperatureCause cause)
+    {
+        Entry.Logger.Info(
+            $"[TempManager] ApplyTemperatureDelta: card={card.Id}, requestedDelta={requestedDelta}, cause={cause}");
+
+        if (requestedDelta == 0)
         {
-            Entry.Logger.Info("[TempManager] Delta is 0, skipping");
-            return;
+            var unchanged = GetCardTemperature(card);
+            return new TemperatureChangeResult(
+                card,
+                cause,
+                requestedDelta,
+                0,
+                unchanged,
+                unchanged,
+                false,
+                true
+            );
+        }
+
+        if (IsThermallyIsolated(card))
+        {
+            Entry.Logger.Info("[TempManager] Card is thermally isolated, skipping temperature and reactivity changes");
+            var unchanged = GetCardTemperature(card);
+            return new TemperatureChangeResult(
+                card,
+                cause,
+                requestedDelta,
+                0,
+                unchanged,
+                unchanged,
+                false,
+                true
+            );
         }
 
         var oldTemp = GetCardTemperature(card);
-        var newTemp = Math.Clamp(oldTemp + delta, -1, 1);
-        if (newTemp == oldTemp)
+        var newTemp = Math.Clamp(oldTemp + requestedDelta, MinTemperature, MaxTemperature);
+        var appliedDelta = newTemp - oldTemp;
+
+        if (appliedDelta != 0)
         {
-            Entry.Logger.Info("[TempManager] Temperature unchanged after clamp, skipping");
-            return;
+            CardTemperatureField.Set(card, newTemp);
+            SyncTemperatureKeywords(card, newTemp);
+            Entry.Logger.Info($"[TempManager] Temperature changed: {oldTemp} -> {newTemp}");
+        }
+        else
+        {
+            Entry.Logger.Info("[TempManager] Temperature unchanged after clamp");
         }
 
-        var appliedDelta = newTemp - oldTemp;
-        
-        Entry.Logger.Info($"[TempManager] Temperature change: {oldTemp} -> {newTemp}");
+        // 规则约定：按请求幅度派生态（而非按实际生效温度变化）
+        var reactivityChanged = ApplyAutoReactivityFromRequestedDelta(card, requestedDelta);
 
-        // 设置新值
-        CardTemperatureField.Set(card, newTemp);
+        if (appliedDelta != 0 && card is ICardTemperatureListener listener)
+            try
+            {
+                await listener.OnCardTemperatureChanged(oldTemp, newTemp, appliedDelta, choiceContext);
+            }
+            catch (Exception ex)
+            {
+                Entry.Logger.Error($"[TempManager] Listener failed for {card.Id}: {ex}");
+            }
 
-        switch (newTemp)
+        return new TemperatureChangeResult(
+            card,
+            cause,
+            requestedDelta,
+            appliedDelta,
+            oldTemp,
+            newTemp,
+            reactivityChanged,
+            false
+        );
+    }
+
+    private static bool IsThermallyIsolated(CardModel card)
+    {
+        return card.Keywords.Contains(MaxwellKeywords.IsothermalKeyword)
+               || card.Keywords.Contains(MaxwellKeywords.InsulationKeyword);
+    }
+
+    private static void SyncTemperatureKeywords(CardModel card, int temperature)
+    {
+        switch (temperature)
         {
             case > 0:
                 CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.ColdKeyword);
                 CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.GreenKeyword);
                 card.AddKeyword(MaxwellKeywords.HeatKeyword);
                 break;
-            case 0:
-                CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.ColdKeyword);
-                CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.HeatKeyword);
-                break;
             case < 0:
                 CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.HeatKeyword);
                 CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.GreenKeyword);
                 card.AddKeyword(MaxwellKeywords.ColdKeyword);
                 break;
-        }
-
-        // 触发回调
-        if (card is ICardTemperatureListener listener)
-        {
-            Entry.Logger.Info("[TempManager] Card implements ICardTemperatureListener, triggering callback");
-            _ = listener.OnCardTemperatureChanged(oldTemp, newTemp, appliedDelta, choiceContext);
-        }
-        else
-        {
-            Entry.Logger.Debug("[TempManager] Card does NOT implement ICardTemperatureListener");
+            default:
+                CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.ColdKeyword);
+                CardUtil.RemoveKeywordIfExist(card, MaxwellKeywords.HeatKeyword);
+                break;
         }
     }
 
@@ -146,150 +263,110 @@ public static class TemperatureManager
     /// <summary>
     ///     获取卡牌当前态类型
     /// </summary>
-    public static StateType GetCardState(CardModel card)
+    public static ReactivityType GetCardReactivity(CardModel card)
     {
-        return CardStateTypeField.Get(card);
+        ArgumentNullException.ThrowIfNull(card);
+        return CardReactivityTypeField.Get(card);
     }
 
     /// <summary>
-    ///     获取卡牌态层数
+    ///     获取卡牌态层数（永不返回负数）
     /// </summary>
-    public static int GetCardStateStacks(CardModel card)
+    public static int GetCardReactivityStacks(CardModel card)
     {
-        return CardStateStacksField.Get(card);
+        ArgumentNullException.ThrowIfNull(card);
+        var stacks = CardReactivityStacksField.Get(card);
+        return Math.Max(0, stacks);
+    }
+
+    /// <summary>
+    ///     显式设置卡牌态（不同态覆盖，相同态叠加，层数小于等于 0 时清空）
+    /// </summary>
+    public static void SetCardReactivity(CardModel card, ReactivityType reactivity, int amount = 1)
+    {
+        ArgumentNullException.ThrowIfNull(card);
+
+        if (SetCardReactivityInternal(card, reactivity, amount))
+            NotifyCardsChanged([card]);
     }
 
     /// <summary>
     ///     消耗卡牌当前态，并转换为永久攻防加成数值
     /// </summary>
-    public static (int damageBonus, int blockBonus) ConsumeCardStateAsPermanentBonus(CardModel card)
+    public static (int damageBonus, int blockBonus) ConsumeCardReactivityAsPermanentBonus(CardModel card)
     {
         ArgumentNullException.ThrowIfNull(card);
 
-        var state = GetCardState(card);
-        var stacks = GetCardStateStacks(card);
+        var reactivity = GetCardReactivity(card);
+        var stacks = GetCardReactivityStacks(card);
 
-        if (state == StateType.None || stacks <= 0)
+        if (reactivity == ReactivityType.None || stacks <= 0)
         {
-            SetCardState(card, StateType.None);
+            SetCardReactivity(card, ReactivityType.None);
             return (0, 0);
         }
 
         var damageBonus = 0;
         var blockBonus = 0;
-        switch (state)
+        switch (reactivity)
         {
-            case StateType.Lively:
+            case ReactivityType.Potent:
                 damageBonus = 2 * stacks;
                 break;
-            case StateType.Stable:
+            case ReactivityType.Stable:
                 blockBonus = 2 * stacks;
                 break;
         }
 
-        // 固化后清空临时态，避免临时和永久重复叠加
-        SetCardState(card, StateType.None);
+        SetCardReactivity(card, ReactivityType.None);
         Entry.Logger.Info(
-            $"[TempManager] ConsumeCardStateAsPermanentBonus: {card.Id}, state={state}, stacks={stacks}, damage+={damageBonus}, block+={blockBonus}");
+            $"[TempManager] ConsumeCardReactivityAsPermanentBonus: {card.Id}, reactivity={reactivity}, stacks={stacks}, damage+={damageBonus}, block+={blockBonus}");
         return (damageBonus, blockBonus);
     }
 
-    /// <summary>
-    ///     设置卡牌态（不同态会覆盖，相同态会叠加）
-    /// </summary>
-    public static void SetCardState(CardModel card, StateType state, int amount = 1)
+    private static bool ApplyAutoReactivityFromRequestedDelta(CardModel card, int requestedDelta)
     {
-        var current = GetCardState(card);
-        var currentStacks = GetCardStateStacks(card);
-        var changed = false;
-        Entry.Logger.Info($"[TempManager] SetCardState: {card.Id}, current={current}, new={state}, amount={amount}");
+        if (requestedDelta == 0) return false;
 
-        if (state == StateType.None)
-        {
-            // 清除态
-            if (current != StateType.None || currentStacks != 0)
-            {
-                CardStateTypeField.Set(card, StateType.None);
-                CardStateStacksField.Set(card, 0);
-                changed = true;
-                Entry.Logger.Info("[TempManager] State cleared");
-            }
-        }
-        else if (current == state)
-        {
-            // 相同态：叠加
-            if (amount != 0)
-            {
-                var newStacks = currentStacks + amount;
-                CardStateStacksField.Set(card, newStacks);
-                changed = true;
-                Entry.Logger.Info($"[TempManager] Same state, stacks: {currentStacks} -> {newStacks}");
-            }
-        }
-        else
-        {
-            // 不同态：覆盖
-            CardStateTypeField.Set(card, state);
-            CardStateStacksField.Set(card, amount);
-            changed = true;
-            Entry.Logger.Info("[TempManager] Different state, overwritten");
-        }
-
-        if (changed)
-        {
-            card.Owner.PlayerCombatState?.RecalculateCardValues();
-            // 刷新卡牌 UI 显示
-            var nCard = MegaCrit.Sts2.Core.Nodes.Cards.NCard.FindOnTable(card);
-            nCard?.UpdateVisuals(card.Pile?.Type ?? MegaCrit.Sts2.Core.Entities.Cards.PileType.None, 
-                MegaCrit.Sts2.Core.Entities.Cards.CardPreviewMode.Normal);
-        }
+        var reactivity = requestedDelta > 0 ? ReactivityType.Potent : ReactivityType.Stable;
+        var amount = Math.Abs(requestedDelta);
+        return SetCardReactivityInternal(card, reactivity, amount);
     }
 
-    /// <summary>
-    ///     获取卡牌态的额外描述文本（用于追加到卡牌描述底部）
-    /// </summary>
-    public static string? GetCardStateExtraCardText(CardModel card)
+    private static bool SetCardReactivityInternal(CardModel card, ReactivityType reactivity, int amount)
     {
-        ArgumentNullException.ThrowIfNull(card);
+        var current = GetCardReactivity(card);
+        var currentStacks = GetCardReactivityStacks(card);
 
-        var state = GetCardState(card);
-        var stacks = GetCardStateStacks(card);
-        if (state == StateType.None || stacks <= 0) return null;
-
-        var key = state switch
+        if (reactivity == ReactivityType.None || amount <= 0)
         {
-            StateType.Lively => "MAXWELLMOD-STATE_LIVELY.extraCardText",
-            StateType.Stable => "MAXWELLMOD-STATE_STABLE.extraCardText",
-            _ => null
-        };
-        if (key == null) return null;
+            if (current == ReactivityType.None && currentStacks == 0) return false;
 
-        var text = LocString.GetIfExists("static_hover_tips", key);
-        if (text != null)
-        {
-            text.Add("Amount", stacks);
-            text.Add("Bonus", stacks * 2);
-            return text.GetFormattedText();
+            CardReactivityTypeField.Set(card, ReactivityType.None);
+            CardReactivityStacksField.Set(card, 0);
+            return true;
         }
 
-        Entry.Logger.Warn($"[TempManager] Missing loc key static_hover_tips/{key}, using fallback text");
-        return state switch
+        if (current == reactivity)
         {
-            StateType.Lively => $"[gold]活泼[/gold]{stacks}层 (伤害+{stacks * 2})",
-            StateType.Stable => $"[gold]稳定[/gold]{stacks}层 (点+{stacks * 2})",
-            _ => null
-        };
+            var newStacks = currentStacks + amount;
+            if (newStacks <= 0)
+            {
+                CardReactivityTypeField.Set(card, ReactivityType.None);
+                CardReactivityStacksField.Set(card, 0);
+                return true;
+            }
+
+            if (newStacks == currentStacks) return false;
+
+            CardReactivityStacksField.Set(card, newStacks);
+            return true;
+        }
+
+        CardReactivityTypeField.Set(card, reactivity);
+        CardReactivityStacksField.Set(card, amount);
+        return current != reactivity || currentStacks != amount;
     }
 
     #endregion
-}
-
-/// <summary>
-///     卡牌态类型
-/// </summary>
-public enum StateType
-{
-    None,
-    Lively, // 活泼：伤害+2
-    Stable // 稳定：防御+2
 }

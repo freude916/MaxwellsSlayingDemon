@@ -1,4 +1,4 @@
-using System.Linq;
+using MaxwellMod._Utils;
 using MaxwellMod.Temperature;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
@@ -27,7 +27,7 @@ public class AdiabaticExpansion : AbstractMaxwellCard
         ArgumentNullException.ThrowIfNull(cardPlay);
 
         await CreatureCmd.TriggerAnim(Owner.Creature, "Cast", Owner.Character.CastAnimDelay);
-        CoolAdjacentCards(choiceContext, cardPlay.Card);
+        await CoolAdjacentCards(choiceContext, cardPlay.Card);
         await PowerCmd.Apply<DrawCardsNextTurnPower>(Owner.Creature, DynamicVars.Cards.BaseValue, Owner.Creature, this);
     }
 
@@ -36,19 +36,20 @@ public class AdiabaticExpansion : AbstractMaxwellCard
         DynamicVars.Cards.UpgradeValueBy(1);
     }
 
-    private void CoolAdjacentCards(PlayerChoiceContext choiceContext, CardModel sourceCard)
+    private async Task CoolAdjacentCards(PlayerChoiceContext choiceContext, CardModel sourceCard)
     {
-        if (Owner.PlayerCombatState == null) return;
+        if (!CardAdjacencySnapshotStore.TryGetPlayAdjacencySnapshot(sourceCard, out var left, out var right)) return;
 
-        var hand = Owner.PlayerCombatState.Hand.Cards.ToList();
-        var recordedIndex = TemperatureManager.HandIndexField.Get(sourceCard);
+        List<CardModel> targets = [];
+        if (left != null) targets.Add(left);
+        if (right != null) targets.Add(right);
+        if (targets.Count == 0) return;
 
-        if (recordedIndex < 0) return;
-
-        if (recordedIndex > 0 && recordedIndex - 1 < hand.Count)
-            TemperatureManager.ModifyCardTemperature(hand[recordedIndex - 1], -1, choiceContext);
-
-        if (recordedIndex < hand.Count)
-            TemperatureManager.ModifyCardTemperature(hand[recordedIndex], -1, choiceContext);
+        await TemperatureManager.ApplyTemperatureBatchAsync(
+            targets,
+            -1,
+            choiceContext,
+            TemperatureCause.CardEffect
+        );
     }
 }

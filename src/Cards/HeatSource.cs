@@ -5,7 +5,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 namespace MaxwellMod.Cards;
 
 /// <summary>
-///     Maxwell 的初始攻击牌
+///     热源
 /// </summary>
 public class HeatSource : AbstractMaxwellCard
 {
@@ -13,7 +13,8 @@ public class HeatSource : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => [MaxwellKeywords.HeatKeyword, MaxwellKeywords.DeflectionKeyword];
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+        [MaxwellKeywords.HeatKeyword, MaxwellKeywords.DeflectionKeyword];
 
     /// <summary>
     ///     卡牌标签 (Strike)

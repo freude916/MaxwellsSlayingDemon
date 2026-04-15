@@ -12,7 +12,7 @@ namespace MaxwellMod.Cards;
 /// <summary>
 ///     冰刀：
 ///     - 获得敏捷
-///     - 当环境温度由 &lt;= 0 变为 &gt; 0 时失去这些敏捷
+///     - 当环境温度 &gt; 0 时失去这些敏捷
 ///     - 造成伤害
 /// </summary>
 public class IceBlade : AbstractMaxwellCard

@@ -96,6 +96,9 @@
         <Compile Remove="materials/**"/>
         <Compile Remove="shaders/**"/>
         <Compile Remove="images/**"/>
+        <Compile Remove="scripts/**"/>
+        <Compile Remove="**/*.uid"/>
+        <Compile Remove="**/*.import"/>
         <EmbeddedResource Remove="MaxwellMod/**"/>
         <EmbeddedResource Remove="materials/**"/>
         <EmbeddedResource Remove="shaders/**"/>
@@ -117,7 +120,24 @@
     <ItemGroup>
         <Content Include="Directory.Build.props"/>
         <Content Include="README.md"/>
+        <None Include="scripts\*"/>
     </ItemGroup>
+
+    <UsingTask TaskName="UpdateManifestVersionTask"
+               TaskFactory="RoslynCodeTaskFactory"
+               AssemblyFile="$(MSBuildToolsPath)/Microsoft.Build.Tasks.Core.dll">
+        <ParameterGroup>
+            <ManifestPath ParameterType="System.String" Required="true"/>
+        </ParameterGroup>
+        <Task>
+            <Code Type="Fragment" Language="cs" Source="$(MSBuildProjectDirectory)/scripts/UpdateManifestVersionTask.cs"/>
+        </Task>
+    </UsingTask>
+
+    <Target Name="UpdateManifestVersionBeforePublish" BeforeTargets="Publish">
+        <Message Text="Stamping MaxwellMod.json version before publish." Importance="high"/>
+        <UpdateManifestVersionTask ManifestPath="$(MSBuildProjectDirectory)/MaxwellMod.json"/>
+    </Target>
 
     <Target Name="CheckDependencyPaths">
         <Error Text=" Slay the Spire 2 data not found at path '$(Sts2DataDir)'"
@@ -139,7 +159,7 @@
 
     <Target Name="GodotPublish" AfterTargets="Publish" Condition="'$(GodotPath)' != '' and Exists('$(GodotPath)') and '$(IsInnerGodotExport)' != 'true'">
         <Message Text="Exporting Godot .pck to mods folder" Importance="high"/>
-        <Exec Command="&quot;$(GodotPath)&quot; --headless --export-pack &quot;BasicExport&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
+        <Exec Command="&quot;$(GodotPath)&quot; --headless --assembly-search-paths=&quot;$(TargetDir);$(Sts2DataDir)&quot; --export-pack &quot;BasicExport&quot; &quot;$(ModsPath)$(MSBuildProjectName)/$(MSBuildProjectName).pck&quot;"
               EnvironmentVariables="IsInnerGodotExport=true;MSBUILDDISABLENODEREUSE=1"
               ContinueOnError="WarnAndContinue"/>
     </Target>

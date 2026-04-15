@@ -1,6 +1,5 @@
 using MaxwellMod.Cards;
 using MaxwellMod.Powers;
-using MaxwellMod.Stash;
 using MegaCrit.Sts2.Core.Combat;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.Entities.Relics;
@@ -14,7 +13,6 @@ namespace MaxwellMod.Relics;
 ///     Maxwell 的初始遗物
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
-
 public class RecordingEye : AbstractMaxwellRelic
 {
     /// <summary>
@@ -32,7 +30,7 @@ public class RecordingEye : AbstractMaxwellRelic
         if (player == Owner && combatState.RoundNumber <= 1)
         {
             Flash();
-            await StashCard.CreateInHand(Owner, 1, combatState);
+            await StashCard.CreateInHand(Owner, 2, combatState);
         }
     }
 

@@ -3,6 +3,6 @@
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-0r.next": "...",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-1r.ancient": "...",
   "THE_ARCHITECT.talk.MAXWELLMOD-MAXWELL_CHARACTER.0-attack": "...",
-  "MAXWELLMOD-STATE_LIVELY.extraCardText": "态：活泼[blue]{Amount}[/blue] (伤害+[blue]{Bonus}[/blue])",
-  "MAXWELLMOD-STATE_STABLE.extraCardText": "态：稳定[blue]{Amount}[/blue] (格挡+[blue]{Bonus}[/blue])"
+  "MAXWELLMOD-REACTIVITY_POTENT.extraCardText": "态：活泼[blue]{Amount}[/blue] (伤害+[blue]{Bonus}[/blue])",
+  "MAXWELLMOD-REACTIVITY_STABLE.extraCardText": "态：稳定[blue]{Amount}[/blue] (格挡+[blue]{Bonus}[/blue])"
 }

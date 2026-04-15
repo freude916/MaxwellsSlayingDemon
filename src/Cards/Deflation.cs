@@ -1,8 +1,6 @@
-using MaxwellMod.Stash;
 using MaxwellMod.Temperature;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Models;
 
 namespace MaxwellMod.Cards;
 
@@ -22,16 +20,20 @@ public class Deflation : AbstractMaxwellCard
 
         var handCards = PileType.Hand.GetPile(Owner).Cards.ToList();
         foreach (var card in handCards)
-        {
             card.EnergyCost.AddThisTurn(-1, reduceOnly: true);
-            TemperatureManager.ModifyCardTemperature(card, -1, choiceContext);
-            TemperatureManager.SetCardState(card, StateType.None);
-        }
 
-        PileType.Hand.GetPile(Owner).Cards.ToList().ForEach(card => TemperatureManager.SetCardState(card, StateType.None));
-        PileType.Discard.GetPile(Owner).Cards.ToList().ForEach(card => TemperatureManager.SetCardState(card, StateType.None));
+        await TemperatureManager.ApplyTemperatureBatchAsync(
+            handCards,
+            -1,
+            choiceContext,
+            TemperatureCause.CardEffect
+        );
 
-        await Task.CompletedTask;
+        foreach (var card in handCards)
+            TemperatureManager.SetCardReactivity(card, ReactivityType.None);
+
+        foreach (var card in PileType.Discard.GetPile(Owner).Cards)
+            TemperatureManager.SetCardReactivity(card, ReactivityType.None);
     }
 
     protected override void OnUpgrade()

@@ -9,7 +9,7 @@
 | 温度环境 | TEMP_ENV | Power             | 全局温度管理，温度阈值效果        |
 | 热    | HEAT     | **CustomKeyword** | 打出时升温，影响周围卡牌温度+1并施活泼 |
 | 冷    | COLD     | **CustomKeyword** | 打出时降温，影响周围卡牌温度-1并施稳定 |
-| 活泼   | LIVELY   | State (Var)       | 伤害+2                 |
+| 活泼   | POTENT   | State (Var)       | 伤害+2                 |
 | 稳定   | STABLE   | State (Var)       | 防御+2                 |
 | 绿    | GREEN    | CustomKeyword     | 虚无+消耗，态转化，传递         |
 | 活塞   | PISTON   | Card              | 自己温度变化时触发效果          |
@@ -297,7 +297,7 @@ public class CardTempVar : DynamicVar
 public enum StateType
 {
     None,
-    Lively,   // 活泼：伤害+2
+    Potent,   // 活泼：伤害+2
     Stable    // 稳定：防御+2
 }
 
@@ -321,7 +321,7 @@ public class StateVar : DynamicVar
         _state = state;
     }
 
-    public int LivelyStacks => State == StateType.Lively ? IntValue : 0;
+    public int PotentStacks => State == StateType.Potent ? IntValue : 0;
     public int StableStacks => State == StateType.Stable ? IntValue : 0;
 }
 ```
@@ -407,7 +407,7 @@ public static class TemperatureCardPlayPatch
             await TemperatureManager.ModifyGlobalTemperature(combatState, +1);
 
             // 2. 影响周围卡牌
-            AffectAdjacentCards(combatState, card, +1, StateType.Lively);
+            AffectAdjacentCards(combatState, card, +1, StateType.Potent);
         }
         // 冷牌
         else if (TemperatureManager.HasColdKeyword(card))
@@ -464,7 +464,7 @@ public static class StateDamagePatch
         if (!props.IsPoweredAttack()) return;
 
         var state = TemperatureManager.GetCardState(cardSource);
-        if (state != StateType.Lively) return;
+        if (state != StateType.Potent) return;
 
         var stacks = cardSource.DynamicVars.TryGetValue(TemperatureManager.StateVarKey, out var v)
             ? v.IntValue : 0;
@@ -605,7 +605,7 @@ public class Piston : AbstractMaxwellCard, ICardTemperatureListener
     "NAMES": ["冷"],
     "DESCRIPTION": "打出时降温。影响周围卡牌温度-1并施加 稳定"
   },
-  "Maxwell_Lively": {
+  "Maxwell_Potent": {
     "NAMES": ["活泼"],
     "DESCRIPTION": "伤害数值 +2"
   },

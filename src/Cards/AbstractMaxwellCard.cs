@@ -10,16 +10,17 @@ namespace MaxwellMod.Cards;
 ///     Maxwell 人物卡牌的基类
 /// </summary>
 [Pool(typeof(MaxwellCardPool))]
-public abstract class AbstractMaxwellCard : CustomCardModel
+public abstract class AbstractMaxwellCard(
+    int energyCost,
+    CardType type,
+    CardRarity rarity,
+    TargetType targetType,
+    bool shouldShowInCardLibrary = true,
+    bool autoAdd = true)
+    : CustomCardModel(energyCost, type, rarity, targetType, shouldShowInCardLibrary, autoAdd)
 {
     private int _maxwellModPermBlock;
     private int _maxwellModPermDamage;
-
-    protected AbstractMaxwellCard(int energyCost, CardType type, CardRarity rarity, TargetType targetType,
-        bool shouldShowInCardLibrary = true, bool autoAdd = true)
-        : base(energyCost, type, rarity, targetType, shouldShowInCardLibrary, autoAdd)
-    {
-    }
 
     /// <summary>
     ///     卡牌肖像图片路径
@@ -57,7 +58,7 @@ public abstract class AbstractMaxwellCard : CustomCardModel
     /// <summary>
     ///     叠加 Green 固化后的永久攻防加成
     /// </summary>
-    public void ApplyPermanentStateBonus(int damageBonus, int blockBonus)
+    public void ApplyPermanentReactivityBonus(int damageBonus, int blockBonus)
     {
         if (damageBonus == 0 && blockBonus == 0) return;
         MaxwellMod_PermDamage += damageBonus;

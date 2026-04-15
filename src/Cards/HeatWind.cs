@@ -18,9 +18,12 @@ public class HeatWind : AbstractMaxwellCard
         ArgumentNullException.ThrowIfNull(cardPlay);
 
         var handCards = PileType.Hand.GetPile(Owner).Cards.ToList();
-        foreach (var card in handCards) TemperatureManager.ModifyCardTemperature(card, +1, choiceContext);
-
-        await Task.CompletedTask;
+        await TemperatureManager.ApplyTemperatureBatchAsync(
+            handCards,
+            +1,
+            choiceContext,
+            TemperatureCause.CardEffect
+        );
     }
 
     protected override void OnUpgrade()

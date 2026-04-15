@@ -1,6 +1,7 @@
 using Godot;
 using Godot.Bridge;
 using HarmonyLib;
+using MaxwellMod.Temperature.Patches;
 using MegaCrit.Sts2.Core.Logging;
 using MegaCrit.Sts2.Core.Modding;
 using Logger = MegaCrit.Sts2.Core.Logging.Logger;
@@ -21,6 +22,7 @@ public partial class Entry : Node
 
         Harmony harmony = new(ModId);
         harmony.PatchAll(typeof(Entry).Assembly);
+        TemperatureVisualRefreshBridge.Initialize();
 
         // 注册脚本（包括 localization 等）
         ScriptManagerBridge.LookupScriptsInAssembly(typeof(Entry).Assembly);

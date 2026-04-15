@@ -35,13 +35,17 @@ var allCardsIncludingStash = combatCards.Concat(stashCards);
 ### 2.1 温度（卡牌级）
 
 - 读取：`TemperatureManager.GetCardTemperature(card)`
-- 修改：`TemperatureManager.ModifyCardTemperature(card, delta, choiceContext)`
+- 单体修改：
+  `await TemperatureManager.ApplyTemperatureDeltaAsync(card, delta, choiceContext, TemperatureCause.CardEffect)`
+- 批量修改：
+  `await TemperatureManager.ApplyTemperatureBatchAsync(cards, delta, choiceContext, TemperatureCause.CardEffect)`
 
 当前约束：
 - 默认温度由关键词推导：热牌 `+1`，冷牌 `-1`，其他 `0`
 - 温度上限/下限：`[-1, 1]`
-- 有绝缘关键词时，温度修改会被忽略
-- 若卡牌实现 `ICardTemperatureListener`，会收到回调
+- 有绝缘/恒温关键词时，温度请求会被忽略
+- 若卡牌实现 `ICardTemperatureListener`，在温度实际变化时会被串行 `await` 回调
+- 温度请求会自动派生态（正数 -> 活泼，负数 -> 稳定），叠层按请求幅度 `|delta|`
 
 ### 2.2 态（State）
 
@@ -56,11 +60,12 @@ var allCardsIncludingStash = combatCards.Concat(stashCards);
 
 当前实现通过补丁把态文字追加到描述底部：
 
-- 文本提供：`TemperatureManager.GetCardStateExtraCardText(card)`
+- 文本提供：`CardStateExtraCardTextPatch` 内部逻辑（基于 `GetCardState/GetCardStateStacks`）
 - 追加入口：`CardStateExtraCardTextPatch`（`CardModel.GetDescriptionForPile`）
 
 新增态时，需要同时补：
-- `TemperatureManager.GetCardStateExtraCardText` 的 key 映射
+
+- `CardStateExtraCardTextPatch` 的 key 映射
 - 对应 localization 文本（建议放 `static_hover_tips`）
 
 ---

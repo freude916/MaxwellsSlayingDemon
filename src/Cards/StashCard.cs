@@ -8,7 +8,6 @@ using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.Entities.Players;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
-using MegaCrit.Sts2.Core.Localization;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
 using MegaCrit.Sts2.Core.Models.CardPools;
 using MegaCrit.Sts2.Core.Nodes.Rooms;
@@ -20,9 +19,8 @@ namespace MaxwellMod.Cards;
 ///     升级后可暂存 3 张牌
 /// </summary>
 // ReSharper disable once ClassNeverInstantiated.Global
-
-[Pool(typeof(ColorlessCardPool))]
-public class StashCard(): CustomCardModel(0, CardType.Skill, CardRarity.Token, TargetType.Self)
+[Pool(typeof(TokenCardPool))]
+public class StashCard() : CustomCardModel(0, CardType.Skill, CardRarity.Token, TargetType.Self)
 {
     public override IEnumerable<CardKeyword> CanonicalKeywords => [CardKeyword.Exhaust, CardKeyword.Retain];
 
@@ -55,16 +53,13 @@ public class StashCard(): CustomCardModel(0, CardType.Skill, CardRarity.Token, T
         ArgumentNullException.ThrowIfNull(cardPlay);
 
         // 使用 DynamicVars.Cards 获取可暂存的卡牌数量
-        var maxCards = (int)DynamicVars.Cards.BaseValue;
-
-        GD.Print($"[MaxwellMod] StashCard: OnPlay started, maxCards = {maxCards}");
 
         // 直接使用 CardSelectCmd
         var handPile = PileType.Hand.GetPile(Owner);
         var prefs = new CardSelectorPrefs(
-            new LocString("card_selection", "TO_STASH"),
+            SelectionScreenPrompt,
             0,
-            maxCards
+            DynamicVars.Cards.IntValue
         );
 
         var selectedCards = (await CardSelectCmd.FromHand(

@@ -1,10 +1,11 @@
-using System.Linq;
+using MaxwellMod._Utils;
 using MaxwellMod.Keywords;
 using MaxwellMod.Temperature;
 using MegaCrit.Sts2.Core.Commands;
 using MegaCrit.Sts2.Core.Entities.Cards;
 using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 using MegaCrit.Sts2.Core.Localization.DynamicVars;
+using MegaCrit.Sts2.Core.Models;
 using MegaCrit.Sts2.Core.ValueProps;
 
 namespace MaxwellMod.Cards;
@@ -48,19 +49,23 @@ public class Stellar : AbstractMaxwellCard
             .Execute(choiceContext);
     }
 
-    public override Task OnTurnEndInHand(PlayerChoiceContext choiceContext)
+    public override async Task OnTurnEndInHand(PlayerChoiceContext choiceContext)
     {
-        var handCards = PileType.Hand.GetPile(Owner).Cards.ToList();
-        var index = handCards.IndexOf(this);
-        if (index < 0) return Task.CompletedTask;
-
         var tempDelta = (int)DynamicVars[TempDeltaKey].BaseValue;
-        if (tempDelta == 0) return Task.CompletedTask;
+        if (tempDelta == 0) return;
 
-        if (index > 0) TemperatureManager.ModifyCardTemperature(handCards[index - 1], tempDelta, choiceContext);
-        if (index < handCards.Count - 1) TemperatureManager.ModifyCardTemperature(handCards[index + 1], tempDelta, choiceContext);
+        var (left, right) = CardAdjacencySnapshotStore.GetAdjacentCardsInHand(this);
+        List<CardModel> targets = [];
+        if (left != null) targets.Add(left);
+        if (right != null) targets.Add(right);
+        if (targets.Count == 0) return;
 
-        return Task.CompletedTask;
+        await TemperatureManager.ApplyTemperatureBatchAsync(
+            targets,
+            tempDelta,
+            choiceContext,
+            TemperatureCause.EndTurnAdjacency
+        );
     }
 
     protected override void OnUpgrade()

@@ -35,5 +35,6 @@ public class Overcold : AbstractMaxwellCard
     protected override void OnUpgrade()
     {
         DynamicVars.Block.UpgradeValueBy(3m);
+        DynamicVars.Cards.UpgradeValueBy(1m);
     }
 }

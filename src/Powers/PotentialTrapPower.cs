@@ -7,14 +7,14 @@ using MegaCrit.Sts2.Core.Models;
 namespace MaxwellMod.Powers;
 
 /// <summary>
-///     势阱：你的回合内，置入弃牌堆的状态牌改为消耗
+///     势阱：你的回合内，被丢弃进弃牌堆的状态牌改为消耗
 /// </summary>
 public class PotentialTrapPower : AbstractMaxwellPower
 {
     public override PowerType Type => PowerType.Buff;
     public override PowerStackType StackType => PowerStackType.Single;
 
-    public override async Task AfterCardChangedPiles(CardModel card, PileType oldPileType, AbstractModel? source)
+    public override async Task AfterCardDiscarded(PlayerChoiceContext choiceContext, CardModel card)
     {
         if (Owner.Player == null) return;
         if (card.Owner != Owner.Player) return;
@@ -23,6 +23,6 @@ public class PotentialTrapPower : AbstractMaxwellPower
         if (CombatState?.CurrentSide != Owner.Side) return;
 
         Flash();
-        await CardCmd.Exhaust(new BlockingPlayerChoiceContext(), card);
+        await CardCmd.Exhaust(choiceContext, card);
     }
 }

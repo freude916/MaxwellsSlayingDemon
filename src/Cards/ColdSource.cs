@@ -5,7 +5,7 @@ using MegaCrit.Sts2.Core.GameActions.Multiplayer;
 namespace MaxwellMod.Cards;
 
 /// <summary>
-///     Maxwell 的初始攻击牌
+///     冷源
 /// </summary>
 public class ColdSource : AbstractMaxwellCard
 {
@@ -13,7 +13,8 @@ public class ColdSource : AbstractMaxwellCard
     {
     }
 
-    public override IEnumerable<CardKeyword> CanonicalKeywords => [MaxwellKeywords.ColdKeyword, MaxwellKeywords.DeflectionKeyword];
+    public override IEnumerable<CardKeyword> CanonicalKeywords =>
+        [MaxwellKeywords.ColdKeyword, MaxwellKeywords.DeflectionKeyword];
 
     /// <summary>
     ///     卡牌标签 (Strike)
@@ -21,13 +22,13 @@ public class ColdSource : AbstractMaxwellCard
     protected override HashSet<CardTag> CanonicalTags =>
     [
     ];
-    
-    
+
+
     protected override async Task OnPlay(PlayerChoiceContext choiceContext, CardPlay cardPlay)
     {
         ArgumentNullException.ThrowIfNull(cardPlay);
 
-        // 理论上热已经被 Keyword 解决了
+        // 理论上已经被 Keyword 解决了
         await Task.CompletedTask;
     }
 
